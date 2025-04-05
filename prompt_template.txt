@@ -18,11 +18,11 @@ Rules:
 - If you want to reuse a return value later, you MUST assign it first using the "assign" key.
 - When referencing a previously stored value, use its name wrapped in curly braces, like: "{sum}".
 - Never make up placeholder names like "{previous_result}" — only use values you've explicitly assigned.
-- if given a garbage instruction output what is wrong in the log_message
+- Try to simulate missing functions using available ones.
+- Only log errors when simulation is not feasible.
 
 Available functions:
 - add_numbers(a, b) → Returns the sum of two integers.
-- say_hello(name) → Prints a greeting. Returns nothing.
 - log_message(message) → Logs a message string. Returns nothing.
 
 (DO NOT USE) Example instruction, Add 2 and 3, then log the result:

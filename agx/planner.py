@@ -1,5 +1,5 @@
-#from .mistral_planner import generate_plan_from_mistral
-from .openai_planner import generate_plan_from_openai
+#from .mistral_planner import generate_plan_from_mistral #mistral
+from .openai_planner import generate_plan_from_openai #openai
 import json
 import re
 

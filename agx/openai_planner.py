@@ -7,7 +7,7 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_plan_from_openai(task: str) -> str:
-    with open("prompt_template.txt", "r") as f:
+    with open("o3-mini_prompt_template.txt", "r") as f:
         template = f.read()
 
     prompt = template.replace("{{TASK}}", task)
@@ -21,7 +21,7 @@ def generate_plan_from_openai(task: str) -> str:
         messages=[
             {"role": "user", "content": prompt}
         ],
-        # temperature=0 not usable with o3-mini
+        # temperature=0 # not usable with o3-mini
     )
 
     return response.choices[0].message.content

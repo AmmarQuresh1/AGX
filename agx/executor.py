@@ -4,11 +4,16 @@ Takes plan (JSON) in form:
   {"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "sum"},
   {"function": "log_message", "args": {"message": "{sum}"}}
 ]
+
+This file is responsible for executing each step in the plan,
+substituting memory variables where needed,
+and optionally storing return values for future use.
 """
 
 from .registry import registry
 
-memory = {}  # Global memory for storing return values
+memory = {}           # Global memory for storing intermediate results
+final_messages = []   # Optional: final output collector
 
 def run_plan(plan):
     for step in plan:
@@ -16,6 +21,7 @@ def run_plan(plan):
         raw_args = step.get("args", {})
         assign_var = step.get("assign")
 
+        # Resolve any {placeholders} in arguments
         resolved_args = {}
         for k, v in raw_args.items():
             if isinstance(v, str) and v.startswith("{") and v.endswith("}"):
@@ -35,8 +41,13 @@ def run_plan(plan):
             continue
 
         try:
-            result = registry[fn_name](**resolved_args)
+            if fn_name == "log_message":
+                # Inject memory and final message collector only into log_message
+                result = registry[fn_name](**resolved_args, memory=memory, final_messages=final_messages)
+            else:
+                result = registry[fn_name](**resolved_args)
 
+            # Save result to memory if "assign" is specified
             if assign_var and result is not None:
                 memory[assign_var] = result
                 print(f"[AGX MEM] Stored '{assign_var}' = {result}")
@@ -46,3 +57,4 @@ def run_plan(plan):
 
         except Exception as e:
             print(f"[AGX ERROR] Function '{fn_name}' raised an error: {e}")
+
