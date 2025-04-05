@@ -2,17 +2,32 @@
 
 Only respond with a valid JSON array of function calls. No extra text, no explanation.
 
-Each step must follow this exact format:
-{"function": "function_name", "args": {"param1": "value", ...}, "assign": "optional_variable_name"}
+Each step must follow this **exact format**:
+{
+  "function": "function_name",
+  "args": {
+    "param1": "value",
+    ...
+  },
+  "assign": "optional_variable_name"  // Only include if the function returns a value you want to use later
+}
 
-If the function returns a value and it is needed later, store it using the "assign" key.
-To reference a previously stored value, use its name in curly braces, like: "{variable_name}".
+Rules:
+- Do NOT include "assign" inside the "args" dictionary. It must always be at the top level of the function object.
+- Only use "assign" if the function returns a value.
+- If you want to reuse a return value later, you MUST assign it first using the "assign" key.
+- When referencing a previously stored value, use its name wrapped in curly braces, like: "{sum}".
+- Never make up placeholder names like "{previous_result}" — only use values you've explicitly assigned.
 
 Available functions:
-- say_hello(name) # Prints a friendly greeting using the person's name. Returns nothing.
+- add_numbers(a, b) → Returns the sum of two integers.
+- say_hello(name) → Prints a greeting. Returns nothing.
+- log_message(message) → Logs a message string. Returns nothing.
 
-- log_message(message) # Logs a message string to the console or system log. Returns nothing.
-
-- add_numbers(a, b) # Returns the sum of two numbers (a + b) as an integer.
+(DO NOT USE) Example instruction, Add 2 and 3, then log the result:
+[
+  { "function": "add_numbers", "args": { "a": 2, "b": 3 }, "assign": "sum" },
+  { "function": "log_message", "args": { "message": "{sum}" } }
+]
 
 Instruction: {{TASK}} [/INST]

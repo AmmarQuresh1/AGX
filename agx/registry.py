@@ -7,7 +7,9 @@ def log_message(message):
     return None
 
 def add_numbers(a, b):
-    return a + b  # now returns the result instead of printing
+    if not isinstance(a, int) or not isinstance(b, int):
+        raise ValueError(f"add_numbers expected integers, got a={a} ({type(a)}), b={b} ({type(b)})")
+    return a + b
 
 registry = {
     "say_hello": say_hello,

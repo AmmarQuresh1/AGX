@@ -16,11 +16,17 @@ def run_plan(plan):
         raw_args = step.get("args", {})
         assign_var = step.get("assign")
 
-        # Resolve {placeholders} using memory
-        resolved_args = {
-            k: memory.get(v[1:-1], v) if isinstance(v, str) and v.startswith("{") and v.endswith("}") else v
-            for k, v in raw_args.items()
-        }
+        resolved_args = {}
+        for k, v in raw_args.items():
+            if isinstance(v, str) and v.startswith("{") and v.endswith("}"):
+                var_name = v[1:-1]
+                if var_name in memory:
+                    resolved_args[k] = memory[var_name]
+                else:
+                    print(f"[AGX WARN] Variable '{var_name}' not found in memory. Using raw string '{v}'.")
+                    resolved_args[k] = v
+            else:
+                resolved_args[k] = v
 
         print(f"[AGX EXEC] Running '{fn_name}' with args: {resolved_args}")
 
