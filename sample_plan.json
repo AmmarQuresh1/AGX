@@ -1,0 +1,15 @@
+[
+    {
+      "function": "say_hello",
+      "args": {
+        "name": "Ammar Qureshi"
+      }
+    },
+    {
+      "function": "log_message",
+      "args": {
+        "message": "AGX ran the plan successfully."
+      }
+    }
+  ]
+  
