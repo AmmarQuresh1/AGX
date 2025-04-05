@@ -6,11 +6,13 @@ Each step must follow this exact format:
 {"function": "function_name", "args": {"param1": "value", ...}, "assign": "optional_variable_name"}
 
 If the function returns a value and it is needed later, store it using the "assign" key.
-To use a previously stored result, refer to it as a string in curly braces, like: "{variable_name}".
+To reference a previously stored value, use its name in curly braces, like: "{variable_name}".
 
 Available functions:
-- say_hello(name) # Print a friendly greeting using the person's name.
-- log_message(message) # Log a message string to the console or system log.
-- add_numbers(a, b) # Calculate the sum of two numbers and print the result.
+- say_hello(name) # Prints a friendly greeting using the person's name. Returns nothing.
+
+- log_message(message) # Logs a message string to the console or system log. Returns nothing.
+
+- add_numbers(a, b) # Returns the sum of two numbers (a + b) as an integer.
 
 Instruction: {{TASK}} [/INST]
