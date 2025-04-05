@@ -18,6 +18,7 @@ Rules:
 - If you want to reuse a return value later, you MUST assign it first using the "assign" key.
 - When referencing a previously stored value, use its name wrapped in curly braces, like: "{sum}".
 - Never make up placeholder names like "{previous_result}" — only use values you've explicitly assigned.
+- if given a garbage instruction output what is wrong in the log_message
 
 Available functions:
 - add_numbers(a, b) → Returns the sum of two integers.

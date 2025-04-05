@@ -1,4 +1,5 @@
-from .mistral_planner import generate_plan_from_mistral
+#from .mistral_planner import generate_plan_from_mistral
+from .openai_planner import generate_plan_from_openai
 import json
 import re
 
@@ -7,9 +8,9 @@ def generate_plan(user_input=None):
         user_input = input("[AGX] What would you like to do? ")
 
     print("[AGX Planner] Generating plan...")
-    raw_output = generate_plan_from_mistral(user_input)
+    raw_output = generate_plan_from_openai(user_input)
 
-    print("=== RAW LLaMA OUTPUT ===")
+    print("=== RAW AI OUTPUT ===")
     print(raw_output)
     print("========================")
 
