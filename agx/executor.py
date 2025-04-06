@@ -29,7 +29,7 @@ def run_plan(plan):
                 if var_name in memory:
                     resolved_args[k] = memory[var_name]
                 else:
-                    print(f"[AGX WARN] Variable '{var_name}' not found in memory. Using raw string '{v}'.")
+                    print(f"\033[93m[AGX WARN] Variable '{var_name}' not found in memory. Using raw string '{v}'.\033[93m")
                     resolved_args[k] = v
             else:
                 resolved_args[k] = v
@@ -37,7 +37,7 @@ def run_plan(plan):
         print(f"[AGX EXEC] Running '{fn_name}' with args: {resolved_args}")
 
         if fn_name not in registry:
-            print(f"[AGX ERROR] Function '{fn_name}' not registered!")
+            print(f"\033[0m[AGX ERROR] Function '{fn_name}' not registered!\033[0m")
             continue
 
         try:
@@ -56,5 +56,5 @@ def run_plan(plan):
                 memory["result"] = result
 
         except Exception as e:
-            print(f"[AGX ERROR] Function '{fn_name}' raised an error: {e}")
+            print(f"\033[0m[AGX ERROR] Function '{fn_name}' raised an error: {e}\033[0m")
 

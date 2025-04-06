@@ -2,7 +2,7 @@
 
 Only respond with a valid JSON array of function calls. No extra text, no explanation.
 
-Each step must follow this **exact format**:
+Each step must follow this exact format:
 {
   "function": "function_name",
   "args": {

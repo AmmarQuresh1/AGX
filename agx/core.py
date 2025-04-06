@@ -1,5 +1,6 @@
 from .executor import run_plan, final_messages
 from .planner import generate_plan
+from .validate_plan import validate_plan
 
 def agx_main():
     print("[AGX] Backend initialized.")
@@ -7,8 +8,9 @@ def agx_main():
     # Load plan using your planner
     plan = generate_plan()
 
-    print("[AGX] Executing plan...")
-    run_plan(plan)
+    if validate_plan(plan):
+        print("[AGX] Executing plan...")
+        run_plan(plan)
 
     if final_messages:
         print("\n[AGX FINAL OUTPUT]")
