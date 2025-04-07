@@ -15,6 +15,20 @@ from .registry import registry
 memory = {}           # Global memory for storing intermediate results
 final_messages = []   # Optional: final output collector
 
+def resolve_variables(value, memory):
+    if isinstance(value, str):
+        try:
+            return value.format(**memory)
+        except KeyError as e:
+            print(f"\033[93m[AGX WARN] Missing memory variable: {e.args[0]} in '{value}'\033[93m")
+            return value
+    elif isinstance(value, dict):
+        return {k: resolve_variables(v, memory) for k, v in value.items()}
+    elif isinstance(value, list):
+        return [resolve_variables(item, memory) for item in value]
+    else:
+        return value
+
 def run_plan(plan):
     for step in plan:
         fn_name = step["function"]
@@ -22,17 +36,7 @@ def run_plan(plan):
         assign_var = step.get("assign")
 
         # Resolve any {placeholders} in arguments
-        resolved_args = {}
-        for k, v in raw_args.items():
-            if isinstance(v, str) and v.startswith("{") and v.endswith("}"):
-                var_name = v[1:-1]
-                if var_name in memory:
-                    resolved_args[k] = memory[var_name]
-                else:
-                    print(f"\033[93m[AGX WARN] Variable '{var_name}' not found in memory. Using raw string '{v}'.\033[93m")
-                    resolved_args[k] = v
-            else:
-                resolved_args[k] = v
+        resolved_args = resolve_variables(raw_args, memory)
 
         print(f"[AGX EXEC] Running '{fn_name}' with args: {resolved_args}")
 

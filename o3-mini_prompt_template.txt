@@ -32,5 +32,10 @@ What is NOT a valid instruction:
 
 Available functions:
 - add_numbers(a, b) # Takes numbers a and b. Returns the sum of two numbers.
-- log_message(message) # Logs a message string. Returns nothing.
+- log_message(message: str) # Also may be referred to as output, print, etc 
 - div_numbers(a, b) # Takes numbers a and b. Returns the division of two numbers.
+- fetch_webpage(url) # Takes string url. Returns a big single string of combined visible page text.
+- summarize_text(text) # Takes a block of text as string and returns a short summary as string.
+- load_pdf(path: str) -> str # Reads the contents of a PDF file, like a form or report.
+- update_sheet(data: dict) # Add new supplier info into the finance spreadsheet. Google sheets.
+- extract_field(text: str, field: str) -> str # Pulls values like "VAT Number" or "Company Name" from a doc.
