@@ -10,7 +10,7 @@ substituting memory variables where needed,
 and optionally storing return values for future use.
 """
 
-from .registry import registry
+from .registries.test_registry import registry
 
 memory = {}           # Global memory for storing intermediate results
 final_messages = []   # Optional: final output collector

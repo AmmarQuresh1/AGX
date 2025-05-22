@@ -5,4 +5,6 @@ __pycache__/
 *.pyc
 logs/
 node_modules/
-.env
+credentials.json
+venv
+.DS_Store
