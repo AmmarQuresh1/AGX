@@ -6,13 +6,14 @@ Checks JSON plans for correctness before execution.
 - More validation checks will be added in the future.
 """
 import re
+from .registries.test_registry import registry
 
 # Extensions for validate_plan:
-# Only valid function names can be used (HIGH PRIORITY)
-# Detect "assign" wrongly inside args instead of at the top level.
-# Warn about unused assigned variables.
-# Detect unused or misspelled function names.
-# Future-proof against circular references or duplicate assignments.
+# TODO: Only valid function names can be used (HIGH PRIORITY) (DONE)
+# TODO: Detect "assign" wrongly inside args instead of at the top level.
+# TODO: Warn about unused assigned variables.
+# TODO: Detect unused or misspelled function names.
+# TODO: Future-proof against circular references or duplicate assignments.
 
 def validate_plan(plan):
     assigned_vars = set()  # Keeps track of all variables that get assigned values
@@ -22,6 +23,10 @@ def validate_plan(plan):
         fn = step.get("function")
         args = step.get("args", {})
         assign = step.get("assign")
+
+        # Only valid function names can be used
+        if fn not in registry:
+            errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' does not exist")
 
         # Check if any arguments reference variables (format: {variable_name})
         for k, v in args.items():
