@@ -10,10 +10,9 @@ from .registries.test_registry import registry
 
 # Extensions for validate_plan:
 # TODO: Only valid function names can be used (HIGH PRIORITY) (DONE)
-# TODO: Detect "assign" wrongly inside args instead of at the top level.
 # TODO: Warn about unused assigned variables.
-# TODO: Detect unused or misspelled function names.
-# TODO: Future-proof against circular references or duplicate assignments.
+# TODO: Validate required function parameters are present
+# FUTURE: Future-proof against circular references or duplicate assignments. (post-MVP)
 
 def validate_plan(plan):
     assigned_vars = set()  # Keeps track of all variables that get assigned values
