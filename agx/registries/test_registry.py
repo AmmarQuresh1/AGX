@@ -1,3 +1,21 @@
+"""
+test_registry.py
+
+This is a test registry for use in development.
+Make sure the dictionary stays updated!
+"""
+
+registry = {
+    "log_message": log_message,
+    "add_numbers": add_numbers,
+    "div_numbers": div_numbers,
+    "fetch_webpage": fetch_webpage,
+    "summarize_text": summarize_text,
+    "load_pdf": load_pdf,
+    "extract_field": extract_field,
+    "update_sheet": update_sheet,
+}
+
 def log_message(message, memory=None, final_messages=None):
     # Replace {var} with its value from memory, if available
     if isinstance(message, str):
@@ -95,15 +113,3 @@ def update_sheet(data: dict):
         print(f"[AGX ERROR] update_sheet failed: {e}")
         traceback.print_exc()
         raise
-
-
-registry = {
-    "log_message": log_message,
-    "add_numbers": add_numbers,
-    "div_numbers": div_numbers,
-    "fetch_webpage": fetch_webpage,
-    "summarize_text": summarize_text,
-    "load_pdf": load_pdf,
-    "extract_field": extract_field,
-    "update_sheet": update_sheet,
-}

@@ -1,4 +1,13 @@
-from .executor import run_plan, final_messages
+"""
+core.py
+
+Main backend orchestrator for AGX.
+- Initializes the backend. 
+- Loads and validates the plan.
+- Executes the plan if valid.
+- Prints final output messages.
+"""
+from .executor import run_plan, final_messages 
 from .planner import generate_plan
 from .validate_plan import validate_plan
 

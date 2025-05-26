@@ -1,4 +1,15 @@
 """
+ARCHIVED - This executor has been replaced by compiler.py
+
+IMPORTANT: THIS CODE SUCKS, REWRITE IT DON'T BOTHER REFACTORING
+
+Known issues if this executor is ever revived:
+1. Validation logic should be moved to validate_plan.py
+2. Memory handling needs standardization (auto-storing "result" is problematic)
+3. Error handling should be more consistent and fail predictably
+4. Special-case handling should be replaced with a more systematic approach
+5. Variable resolution could be simplified
+
 Takes plan (JSON) in form:
 [
   {"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "sum"},
@@ -8,6 +19,11 @@ Takes plan (JSON) in form:
 This file is responsible for executing each step in the plan,
 substituting memory variables where needed,
 and optionally storing return values for future use.
+
+TODO: This file will be replaced by compiler.py which will generate
+downloadable Python scripts instead of executing plans directly.
+The validation logic will be moved to validate_plan.py for cleaner
+separation of concerns.
 """
 
 from .registries.test_registry import registry
