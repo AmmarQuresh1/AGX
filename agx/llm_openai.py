@@ -1,7 +1,7 @@
 """
 llm_openai.py
 
-Calls openAI api to generate an output from prompt.
+Calls openAI api to generate an output from prompt:
 - Prompts are in prompt_templates subfolder.
 - The prompts are usually requesting for output in JSON that gets parsed by planner.py.
 """
