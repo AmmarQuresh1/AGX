@@ -55,25 +55,30 @@ def validate_plan(plan):
         # Only valid function names can be used
         if fn not in registry:
             errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' does not exist.")
+            continue # Skip validation for non existent functions
 
         #  ============ PARAMETER AND TYPE VALIDATION ============
         sig = signature(registry[fn])
 
-        # Check parameter names, types, and type hints
-        for i, param in enumerate(sig.parameters.values()):
-            if i >= len(args):
-                errors.append(f"[Plan Error] Missing parameters for '{registry[fn].__name__}'")
+        # Check each provided argument against function parameters
+        for arg_name, arg_value in args.items():
+            if arg_name not in sig.parameters:
+                errors.append(f"[Plan Error] Step {i+1}: Unknown parameter '{arg_name}' for function '{fn}'")
                 continue
-            if not param.name == list(args)[i]:
-                errors.append(f"[Plan Error] Argument name '{list(args)[i]}' in plan does not match actual function parameter name '{param.name}'.")
-            if param.annotation is inspect.empty:
-                errors.append(f"[Plan Error] Parameter '{param.name}' in '{registry[fn].__name__}' lacks a type hint.")
-            if not _check_type(list(args.values())[i], param.annotation):
-                errors.append(f"[Plan Error] '{list(args)[i]}' Is an incorrect type for parameter '{param.name}' in '{registry[fn].__name__}'")
+            
+            param = sig.parameters[arg_name]
+            
+            # Check type hint exists
+            if param.annotation is inspect.Parameter.empty:
+                errors.append(f"[Plan Error] Step {i+1}: Parameter '{param.name}' in '{fn}' lacks type hint.")
+            
+            # Check type compatibility
+            elif not _check_type(arg_value, param.annotation):
+                errors.append(f"[Plan Error] Step {i+1}: Incorrect type for parameter '{param.name}' in '{fn}'")
 
         # Check return type hint
-        if sig.return_annotation is inspect.empty:
-            errors.append(f"[Plan Error] Function '{registry[fn].__name__}' lacks a return type hint.")    
+        if sig.return_annotation is inspect.Parameter.empty:
+            errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' lacks return type hint.")    
 
         #  ============ REQUIRED PARAMETER CHECK ============
         provided_params = set(args.keys())
