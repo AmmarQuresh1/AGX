@@ -5,9 +5,11 @@ This is a test registry for use in development.
 Make sure the dictionary stays updated!
 """
 
-def log_message(message, memory=None, final_messages=None):
+from typing import Optional, Dict, List, Any
+
+def log_message(message: str, memory: Optional[Dict[str, Any]] = None, final_messages: Optional[List[str]] = None) -> None:
     # Replace {var} with its value from memory, if available
-    if isinstance(message, str):
+    if isinstance(message, str) and memory:
         try:
             message = message.format(**memory)
         except KeyError as e:
@@ -19,17 +21,17 @@ def log_message(message, memory=None, final_messages=None):
     print(f"[AGX LOG] {message}")
     return None
 
-def add_numbers(a, b):
+def add_numbers(a: int, b: int) -> int:
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
         raise ValueError(f"add_numbers expected integers, got a={a} ({type(a)}), b={b} ({type(b)})")
     return a + b
 
-def div_numbers(a, b):
+def div_numbers(a: int, b: int) -> float:
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
         raise ValueError(f"div_numbers expected integers, got a={a} ({type(a)}), b={b} ({type(b)})")
     return a / b
 
-def fetch_webpage(url):
+def fetch_webpage(url: str) -> str:
     from langchain.document_loaders import WebBaseLoader
     loader = WebBaseLoader(url)
     docs = loader.load()
