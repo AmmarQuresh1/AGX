@@ -1,17 +1,46 @@
 """
 validate_plan.py
 
-Checks JSON plans for correctness before execution.
-- An argument can't use a variable before it is assigned.
-- More validation checks will be added in the future.
+Comprehensive JSON plan validation system for AGX
+
+This module validates JSON execution plans before they're processed for the
+executor or compiler, catching errors early to prevent runtime failures.
+
+Current validations:
+Function existence - ensures all functions exist in the registry
+Parameter validation - checks names, types, and type hints match function signatures
+Required parameters - ensures all mandatory function parameters are provided
+Type enforcement - validates argument types match function type hints
+Variable references - prevents use of variables before assignment
+Return type hints - ensures all functions have proper return annotations
+
+Future enhancements (post-MVP):
+- Circular reference detection for complex variable dependencies  
+- Duplicate assignment prevention for cleaner generated code
+
+Usage:
+if plan is valid then proceed with execution/compilation
+else plan has errors, fix before proceeding (hybrid confidence for retries)
 """
+# Future enhancements (post-MVP):
+# - Circular reference detection for complex variable dependencies  
+# - Duplicate assignment prevention for cleaner generated code
+
 import re
 from .registries.test_registry import registry
+import inspect
+from inspect import signature
+from typing import get_origin
 
-# Extensions for validate_plan:
-# TODO: Only valid function names can be used (HIGH PRIORITY) (DONE)
-# TODO: Validate required function parameters are present.
-# FUTURE: Future-proof against circular references or duplicate assignments. (post-MVP)
+def _is_basic_type(type_hint):
+    # only allows for simple types for isinstance checks
+    return get_origin(type_hint) is None
+
+def _check_type(value, type_hint):
+    if _is_basic_type(type_hint):
+        return isinstance(value, type_hint)
+    else:
+        return False
 
 def validate_plan(plan):
     assigned_vars = set()  # Keeps track of all variables that get assigned values
@@ -22,10 +51,38 @@ def validate_plan(plan):
         args = step.get("args", {})
         assign = step.get("assign")
 
+        #  ============ FUNCTION EXISTENCE CHECK ============
         # Only valid function names can be used
         if fn not in registry:
-            errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' does not exist")
+            errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' does not exist.")
 
+        #  ============ PARAMETER AND TYPE VALIDATION ============
+        sig = signature(registry[fn])
+
+        # Check parameter names, types, and type hints
+        for i, param in enumerate(sig.parameters.values()):
+            if i >= len(args):
+                errors.append(f"[Plan Error] Missing parameters for '{registry[fn].__name__}'")
+                continue
+            if not param.name == list(args)[i]:
+                errors.append(f"[Plan Error] Argument name '{list(args)[i]}' in plan does not match actual function parameter name '{param.name}'.")
+            if param.annotation is inspect.empty:
+                errors.append(f"[Plan Error] Parameter '{param.name}' in '{registry[fn].__name__}' lacks a type hint.")
+            if not _check_type(list(args.values())[i], param.annotation):
+                errors.append(f"[Plan Error] '{list(args)[i]}' Is an incorrect type for parameter '{param.name}' in '{registry[fn].__name__}'")
+
+        # Check return type hint
+        if sig.return_annotation is inspect.empty:
+            errors.append(f"[Plan Error] Function '{registry[fn].__name__}' lacks a return type hint.")    
+
+        #  ============ REQUIRED PARAMETER CHECK ============
+        provided_params = set(args.keys())
+        for param_name, param in sig.parameters.items():
+            if (param.default == inspect.Parameter.empty and 
+                param_name not in provided_params):
+                errors.append(f"[Plan Error] Step {i+1}: Missing required parameter '{param_name}' for function '{fn}'")
+
+        #  ============ VARIABLE REFERENCE VALIDATION ============
         # Check if any arguments reference variables (format: {variable_name})
         for k, v in args.items():
             if isinstance(v, str) and re.match(r"^{.*}$", v): 
@@ -33,10 +90,12 @@ def validate_plan(plan):
                 if var_name not in assigned_vars: 
                     errors.append(f"[Plan Error] Step {i+1}: Variable '{var_name}' used in argument '{k}' before assignment.")
 
+        #  ============ TRACK ASSIGNMENTS ============
         # Track this step's assigned variable for future steps
         if assign:
             assigned_vars.add(assign)
 
+    #  ============ RETURN RESULTS ============
     if errors:
         print("Plan validation failed:")
         for error in errors:
