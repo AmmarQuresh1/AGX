@@ -35,6 +35,12 @@ def test_your_sample_plan():
     # This should fail because 'say_hello' doesn't exist in registry
     assert validate_plan(plan) == False
 
+def test_missing_type_hints():
+    """Test that validation catches missing type hints"""
+    # This test expects validation to FAIL due to missing type hints
+    plan = [{"function": "some_function_without_type_hints", "args": {"param": "value"}}]
+    assert validate_plan(plan) == False  # ← This should fail validation
+
 # Run tests
 if __name__ == "__main__":
     test_valid_plan()
@@ -42,4 +48,5 @@ if __name__ == "__main__":
     test_missing_required_param()
     test_variable_before_assignment()
     test_your_sample_plan()
+    test_missing_type_hints()
     print("All tests passed!")
