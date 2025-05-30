@@ -3,9 +3,8 @@ test_registry.py
 
 This is a test registry for use in development.
 Make sure the dictionary stays updated!
+Keep imports inside functions or adjust the compiler.
 """
-
-from typing import Optional, Dict, List, Any
 
 def log_message(message: str) -> None:
     print(f"[AGX LOG] {message}")
@@ -21,15 +20,15 @@ def div_numbers(a: int, b: int) -> float:
     return a / b
 
 def fetch_webpage(url: str) -> str:
-    from langchain.document_loaders import WebBaseLoader
+    from langchain.document_loaders import WebBaseLoader # type: ignore
     loader = WebBaseLoader(url)
     docs = loader.load()
     return "\n".join([doc.page_content for doc in docs])
 
 def summarize_text(text: str) -> str:
-    from langchain_community.llms import OpenAI
-    from langchain.chains.summarize import load_summarize_chain
-    from langchain.docstore.document import Document
+    from langchain_community.llms import OpenAI # type: ignore
+    from langchain.chains.summarize import load_summarize_chain # type: ignore
+    from langchain.docstore.document import Document # type: ignore
 
     # Wrap input into a LangChain Document
     docs = [Document(page_content=text)]
@@ -44,7 +43,7 @@ def summarize_text(text: str) -> str:
     return result
 
 def load_pdf(path: str) -> str:
-    from langchain_community.document_loaders import PyMuPDFLoader
+    from langchain_community.document_loaders import PyMuPDFLoader # type: ignore
 
     loader = PyMuPDFLoader(path)
     docs = loader.load()
@@ -67,8 +66,8 @@ def extract_field(text: str, field: str) -> str:
     return match.group(1).strip() if match else "NOT_FOUND"
 
 def update_sheet(data: dict):
-    import gspread
-    from oauth2client.service_account import ServiceAccountCredentials
+    import gspread # type: ignore
+    from oauth2client.service_account import ServiceAccountCredentials # type: ignore
 
     try:
         print(f"[DEBUG] update_sheet received data: {data}")
