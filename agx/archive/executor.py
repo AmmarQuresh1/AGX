@@ -26,7 +26,7 @@ The validation logic will be moved to validate_plan.py for cleaner
 separation of concerns.
 """
 
-from .registries.test_registry import registry
+from .registries.test_registry import registry # type: ignore
 
 memory = {}           # Global memory for storing intermediate results
 final_messages = []   # Optional: final output collector
