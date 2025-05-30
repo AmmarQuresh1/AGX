@@ -1,3 +1,10 @@
+"""
+llm_mistral.py
+
+No longer used as cannot match openAI models.
+Same goal as llm_openai.py, model is sent a prompt to generate a plan for the AGX system.
+"""
+
 import subprocess
 import os
 
