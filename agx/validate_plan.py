@@ -22,9 +22,6 @@ Usage:
 if plan is valid then proceed with execution/compilation
 else plan has errors, fix before proceeding (hybrid confidence for retries)
 """
-# Future enhancements (post-MVP):
-# - Circular reference detection for complex variable dependencies  
-# - Duplicate assignment prevention for cleaner generated code
 
 import re
 from .registries.test_registry import registry
