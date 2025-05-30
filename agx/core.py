@@ -7,7 +7,8 @@ Main backend orchestrator for AGX.
 - Executes the plan if valid.
 - Prints final output messages.
 """
-from .executor import run_plan, final_messages 
+from pathlib import Path
+from .compiler import compile_plan
 from .planner import generate_plan
 from .validate_plan import validate_plan
 
@@ -18,11 +19,19 @@ def agx_main():
     plan = generate_plan()
 
     if validate_plan(plan):
-        print("[AGX] Executing plan...")
-        run_plan(plan)
+        print("[AGX] Compiling plan...")
+        generate_code = compile_plan(plan)
 
-    if final_messages:
-        print("\n[AGX FINAL OUTPUT]")
-        for msg in final_messages:
-            print(f"- {msg}")
-
+        if generate_code:
+            # Save the generated code to downloads folder (cross-platform)
+            downloads_dir = Path.home() / "Downloads"
+            output_file = downloads_dir / "generated_plan.py"
+            
+            with open(output_file, "w") as f:
+                f.write(generate_code)
+            print("[AGX] Plan compiled successfully! Check generated_plan.py")
+            print("[AGX] Run with: python generated_plan.py")
+        else:
+            print("[AGX] Compilation failed.")
+    else:
+        print("[AGX] Plan validation failed - cannot compile.")
