@@ -7,19 +7,8 @@ Make sure the dictionary stays updated!
 
 from typing import Optional, Dict, List, Any
 
-def log_message(message: str, memory: Optional[Dict[str, Any]] = None, final_messages: Optional[List[str]] = None) -> None:
-    # Replace {var} with its value from memory, if available
-    if isinstance(message, str) and memory:
-        try:
-            message = message.format(**memory)
-        except KeyError as e:
-            print(f"[AGX WARN] Variable '{e.args[0]}' not found in memory.")
-
-    if final_messages is not None:
-        final_messages.append(message)
-
+def log_message(message: str) -> None:
     print(f"[AGX LOG] {message}")
-    return None
 
 def add_numbers(a: int, b: int) -> int:
     if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
