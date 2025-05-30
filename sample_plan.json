@@ -1,6 +1,6 @@
 [
     {
-      "function": "say_hello",
+      "function": "log_message",
       "args": {
         "name": "Ammar Qureshi"
       }
