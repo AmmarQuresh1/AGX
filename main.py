@@ -6,7 +6,7 @@ Entry point for AGX
 - Calls agx_main() to run the backend workflow.
 """
 from dotenv import load_dotenv # Loads .env variables into py environment
-from agx import agx_main # Imports agx_main from core.py
+from agx.core import agx_main # Imports agx_main from core.py
 
 load_dotenv()
 
