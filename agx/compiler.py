@@ -25,7 +25,7 @@ def compile_plan(plan):
     # main logic
     code += "def main():\n"
 
-    for i, step in enumerate(plan):
+    for step in plan:
         func_name = step["function"] # Required
         args = step.get("args", {}) # Optional
         assign = step.get("assign") # Optional
