@@ -13,13 +13,13 @@ from .llm_openai import generate_raw_json #openai
 import json
 import re
 
-def generate_plan(user_input=None):
+def generate_plan(prompt=None):
     # Interactively prompts user if no input is provided
-    if not user_input:
-        user_input = input("[AGX] What would you like to do? ")
+    if not prompt:
+        prompt = input("[AGX] What would you like to do? ")
 
     print("[AGX Planner] Generating plan...")
-    raw_output = generate_raw_json(user_input)
+    raw_output = generate_raw_json(prompt)
 
     print("=== RAW AI OUTPUT ===")
     print(raw_output)
