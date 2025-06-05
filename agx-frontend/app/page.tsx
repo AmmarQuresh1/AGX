@@ -44,20 +44,53 @@ export default function Home() {
   };
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>AGX Plan Generator</h1>
-      <form onSubmit={handleSubmit}>
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        paddingTop: "4rem",
+        background: "var(--background)",
+        color: "var(--foreground)",
+      }}
+    >
+      <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "2rem" }}>
+        AGX Plan Generator
+      </h1>
+      <form onSubmit={handleSubmit} style={{ display: "flex", alignItems: "center" }}>
         <input
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter your prompt"
-          style={{ width: 300, padding: 8, marginRight: 8 }}
+          style={{
+            width: 320,
+            padding: 12,
+            marginRight: 12,
+            fontSize: "1.2rem",
+            borderRadius: 6,
+            border: "1px solid #888",
+          }}
         />
-        <button type="submit" disabled={downloading || !prompt}>
+        <button
+          type="submit"
+          disabled={downloading || !prompt}
+          style={{
+            padding: "12px 24px",
+            fontSize: "1.2rem",
+            borderRadius: 6,
+            border: "2px solid #171717", // <-- Button border
+            background: downloading ? "#eee" : "#fff",
+            color: "#171717",
+            cursor: downloading || !prompt ? "not-allowed" : "pointer",
+            fontWeight: "bold",
+          }}
+        >
           {downloading ? "Generating..." : "Generate Plan"}
         </button>
       </form>
-      <p style={{ marginTop: 16, color: "#888" }}>
+      <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem" }}>
         Five plans a day for now.
       </p>
     </main>
