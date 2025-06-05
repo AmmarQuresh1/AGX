@@ -1,15 +1,15 @@
 [
-    {
-      "function": "log_message",
-      "args": {
-        "name": "Ammar Qureshi"
-      }
-    },
-    {
-      "function": "log_message",
-      "args": {
-        "message": "AGX ran the plan successfully."
-      }
+  {
+    "function": "log_message",
+    "args": {
+      "name": "Ammar Qureshi"
     }
-  ]
+  },
+  {
+    "function": "log_message",
+    "args": {
+      "message": "AGX ran the plan successfully."
+    }
+  }
+]
   
