@@ -35,7 +35,7 @@ async def options_root():
     return JSONResponse(content={"ok": True})
 
 @app.post("/", response_class=FileResponse)
-@limiter.limit("5/day")
+@limiter.limit("5/day") # Set limits here
 async def generate_script(script: Script, request: Request):
     plan = agx_main(script.prompt)
     if not plan:
