@@ -8,3 +8,4 @@ node_modules/
 credentials.json
 venv
 .DS_Store
+plan.py
