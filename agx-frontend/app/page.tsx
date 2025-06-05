@@ -17,6 +17,11 @@ export default function Home() {
         },
         body: JSON.stringify({ prompt }),
       });
+      if (response.status == 429) {
+        alert("Rate limit reached: 5 plans per day. Please try again tommorow.")
+        setDownloading(false);
+        return;
+      }
       if (!response.ok) throw new Error("Failed to get file.");
       // File download magic:
       const blob = await response.blob();
@@ -29,7 +34,11 @@ export default function Home() {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert("Something went wrong!");
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Failed to get file.");
+      }
     }
     setDownloading(false);
   };
@@ -48,6 +57,9 @@ export default function Home() {
           {downloading ? "Generating..." : "Generate Plan"}
         </button>
       </form>
+      <p style={{ marginTop: 16, color: "#888" }}>
+        Five plans a day for now.
+      </p>
     </main>
   );
 }
