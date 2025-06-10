@@ -30,12 +30,8 @@ limiter = Limiter(key_func=get_remote_address,
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-@app.options("/")
-async def options_root():
-    return JSONResponse(content={"ok": True})
-
 @app.post("/", response_class=FileResponse)
-@limiter.limit("5/day") # Set limits here
+@limiter.limit("20/day") # Set limits here
 async def generate_script(script: Script, request: Request):
     plan = agx_main(script.prompt)
     if not plan:
