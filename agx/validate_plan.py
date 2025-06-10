@@ -24,7 +24,7 @@ else plan has errors, fix before proceeding (hybrid confidence for retries)
 """
 
 import re
-from .registries.test_registry import registry
+from .registries.devops_test import registry # Change registry here
 import inspect
 from inspect import signature
 from typing import get_origin

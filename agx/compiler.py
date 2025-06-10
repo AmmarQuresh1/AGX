@@ -1,5 +1,5 @@
 import inspect
-from .registries.test_registry import registry
+from .registries.devops_test import registry # Change registry here
 
 """
 Input list example:

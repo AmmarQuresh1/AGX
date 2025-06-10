@@ -15,7 +15,9 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_raw_json(task: str) -> str:
-    with open("prompt_templates/o3-mini_prompt_template.txt", "r") as f:
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    template_path = os.path.join(base_dir, "prompt_templates", "devops.txt")
+    with open(template_path, "r") as f:
         template = f.read()
 
     prompt = template.replace("{{TASK}}", task)
