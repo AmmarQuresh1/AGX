@@ -1,13 +1,16 @@
 "use client"; // If you're in the App Router
 
 import { useState } from "react";
+import { FiCopy } from "react-icons/fi";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [result, setResult] = useState("")
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Stops reload
     setDownloading(true);
     try {
       const response = await fetch("http://localhost:8000/", {
@@ -22,25 +25,37 @@ export default function Home() {
         setDownloading(false);
         return;
       }
-      if (!response.ok) throw new Error("Failed to get file.");
-      // File download magic:
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "plan.py";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
+      if (!response.ok) throw new Error("Failed to get code.");
+
+      // Get code:
+      const code = await response.text();
+      setResult(code);
+
     } catch (err) {
       if (err instanceof Error) {
         alert(err.message);
       } else {
-        alert("Failed to get file.");
+        alert("Failed to get code.");
       }
     }
     setDownloading(false);
+  };
+
+  const handleDownload = () => {
+    if (!result) {
+      alert("No code to download. Generate a script first!");
+      return;
+    }
+    
+    const blob = new Blob([result], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "plan.py";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -56,21 +71,47 @@ export default function Home() {
         color: "var(--foreground)",
       }}
     >
-      <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "2rem" }}>
-        AGX Plan Generator
-      </h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{
+          width: 700,
+          maxWidth: "90vw",
+          margin: "0 auto",
+          textAlign: "left", 
+          alignItems: "center"
+        }}
+      >
+        <img
+          src="/resources/agx_white.png"
+          alt="AGX Logo"
+          style={{
+             height: 40, 
+             textAlign: "left",
+             marginBottom: 32
+             }}
+        />
+
+        <h2 style={{ marginBottom: 24 }}>
+          Describe what you want to automate...
+        </h2>
+
+        <form onSubmit={handleSubmit} style={{ 
+          display: "flex", 
+          marginTop: 8,
+          justifyContent: "center",
+          width: "100%",
+          }}>
         <input
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Enter your prompt"
           style={{
-            width: 320,
+            flex: 1,
             padding: 12,
             marginRight: 12,
             fontSize: "1.2rem",
             borderRadius: 6,
-            border: "1px solid #888",
+            background: "#fffefe",
+            border: "1px solid #b3b2ae",
           }}
         />
         <button
@@ -80,16 +121,92 @@ export default function Home() {
             padding: "12px 24px",
             fontSize: "1.2rem",
             borderRadius: 6,
-            border: "2px solid #171717", // <-- Button border
-            background: downloading ? "#eee" : "#fff",
-            color: "#171717",
+            border: "1px solid #b3b2ae", // <-- Button border
+            background: downloading ? "#E0DBD1" : "#faf8f4",
+            color: "#000000",
             cursor: downloading || !prompt ? "not-allowed" : "pointer",
-            fontWeight: "bold",
+            fontWeight: "normal",
           }}
         >
-          {downloading ? "Generating..." : "Generate Plan"}
+          {downloading ? "Generating..." : "Generate Script"}
         </button>
-      </form>
+        </form>
+
+        <h2 style={{ marginTop: 32, marginBottom: 8 }}>
+        Output
+        </h2>
+        {/* PREFORMATTED BOX */}
+        <div style={{ position: "relative", width: "100%" }}>
+          <pre
+            style={{
+              background: "#f9f8f5",
+              padding: 16,
+              borderRadius: 6,
+              width: "100%",
+              minHeight: 120,
+              maxHeight: 400,
+              paddingBottom: 10,
+              overflowX: "auto",
+              fontSize: "1rem",
+              color: "#222",
+              border: "1px solid #b3b2ae",
+              textAlign: "left",
+              boxSizing: "border-box",
+            }}
+          >
+            {result}
+          </pre>
+          <button
+            type="button"
+            onClick={() => {
+              if (result) {
+                navigator.clipboard.writeText(result);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 800);
+              }
+            }}
+            style={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              padding: "6px 14px",
+              fontSize: "1rem",
+              borderRadius: 4,
+              border: "1px solid #b3b2ae",
+              background: copied ? "#E0DBD1" : "#f9f8f5",
+              color: "#222",
+              cursor: "pointer",
+              opacity: result ? 1 : 0.5,
+              pointerEvents: result ? "auto" : "none",
+            }}
+            disabled={!result}
+          >
+            <FiCopy size={20} />
+          </button>
+        </div>
+        
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={!result}
+          style={{
+            marginTop: 16,
+            padding: "12px 24px",
+            fontSize: "1.2rem",
+            borderRadius: 6,
+            border: "1px solid #b3b2ae",
+            background: !result ? "#faf8f5" : "#E0DBD1",
+            color: !result ? "#999" : "#000000",
+            cursor: !result ? "not-allowed" : "pointer",
+            fontWeight: "normal",
+            width: "100%",
+          }}
+        >
+          Download Script
+        </button>
+
+      </div>
+
       <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem" }}>
         Five plans a day for now.
       </p>
