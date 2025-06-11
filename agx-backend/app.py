@@ -31,12 +31,9 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.post("/", response_class=FileResponse)
-@limiter.limit("20/day") # Set limits here
+@limiter.limit("5/day") # Set limits here
 async def generate_script(script: Script, request: Request):
-    plan = agx_main(script.prompt)
-    if not plan:
+    code = agx_main(script.prompt)
+    if not code:
         raise HTTPException(status_code=500, detail="Plan generation failed.")
-    filename = "plan.py"
-    with open(filename, "w") as f:
-        f.write(plan)
-    return FileResponse(filename)
+    return code
