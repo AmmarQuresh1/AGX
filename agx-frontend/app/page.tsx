@@ -13,7 +13,7 @@ export default function Home() {
     e.preventDefault(); // Stops reload
     setDownloading(true);
     try {
-      const response = await fetch("http://localhost:8000/", {
+      const response = await fetch("https://agx-backend.fly.dev/", { // http://localhost:8000/
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +136,7 @@ export default function Home() {
         Output
         </h2>
         {/* PREFORMATTED BOX */}
-        <div style={{ position: "relative", width: "100%" }}>
+        <div style={{ position: "relative", width: "100%", marginBottom: 16 }}>
           <pre
             style={{
               background: "#f9f8f5",
@@ -145,7 +145,7 @@ export default function Home() {
               width: "100%",
               minHeight: 120,
               maxHeight: 400,
-              paddingBottom: 10,
+              paddingBottom: 16,
               overflowX: "auto",
               fontSize: "1rem",
               color: "#222",
@@ -184,13 +184,11 @@ export default function Home() {
             <FiCopy size={20} />
           </button>
         </div>
-        
         <button
           type="button"
           onClick={handleDownload}
           disabled={!result}
           style={{
-            marginTop: 16,
             padding: "12px 24px",
             fontSize: "1.2rem",
             borderRadius: 6,
