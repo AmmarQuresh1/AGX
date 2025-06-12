@@ -13,7 +13,7 @@ export default function Home() {
     e.preventDefault(); // Stops reload
     setDownloading(true);
     try {
-      const response = await fetch("/api/proxy", { // http://localhost:8000/
+      const response = await fetch("/api", { // http://localhost:8000/
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +136,7 @@ export default function Home() {
         Output
         </h2>
         {/* PREFORMATTED BOX */}
-        <div style={{ position: "relative", width: "100%", marginBottom: 16 }}>
+        <div style={{ position: "relative", width: "100%" }}>
           <pre
             style={{
               background: "#f9f8f5",
@@ -192,6 +192,7 @@ export default function Home() {
             padding: "12px 24px",
             fontSize: "1.2rem",
             borderRadius: 6,
+            marginTop: 16,
             border: "1px solid #b3b2ae",
             background: !result ? "#faf8f5" : "#E0DBD1",
             color: !result ? "#999" : "#000000",
