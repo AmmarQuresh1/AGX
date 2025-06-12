@@ -29,7 +29,15 @@ class Script(BaseModel):
     prompt: str
 
 # Rate limiting
-limiter = Limiter(key_func=get_remote_address,
+def get_real_ip(request: Request):
+    # Prefer x-forwarded-for if present, else fallback
+    xff = request.headers.get("x-forwarded-for")
+    if xff:
+        # x-forwarded-for can be a comma-separated list; take the first
+        return xff.split(",")[0].strip()
+    return request.client.host
+
+limiter = Limiter(key_func=get_real_ip,
                   storage_uri="redis://:fa12cbe52d09461c98fd1e4a5e853304@fly-agx-backend-redis.upstash.io:6379") # redis://localhost:6379
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
