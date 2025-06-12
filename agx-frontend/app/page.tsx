@@ -13,7 +13,7 @@ export default function Home() {
     e.preventDefault(); // Stops reload
     setDownloading(true);
     try {
-      const response = await fetch("https://agx-backend.fly.dev/", { // http://localhost:8000/
+      const response = await fetch("/api/proxy", { // http://localhost:8000/
         method: "POST",
         headers: {
           "Content-Type": "application/json",
