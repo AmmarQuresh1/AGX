@@ -4,6 +4,8 @@
 *.pem
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 logs/
 credentials.json
 venv
