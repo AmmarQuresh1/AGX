@@ -1,0 +1,34 @@
+# .dockerignore
+
+# Ignore git history
+.git
+.gitignore
+
+# Ignore docker specific files
+.dockerignore
+Dockerfile
+
+# Google
+credentials.json
+
+# Ignore all .env files in any directory
+**/.env
+# Python
+.env
+*.key
+*.pem
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+logs/
+venv
+
+# Ignore node specific files (good practice)
+node_modules/
+
+# MacOS
+.DS_Store
+
+# README
+README.md
