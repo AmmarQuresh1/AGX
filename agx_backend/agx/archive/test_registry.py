@@ -1,4 +1,5 @@
 """
+ARCHIVED - API FOR GOOGLE IS DEACTIVATED, REGISTRY NO LONGER SERVES ANY PURPOSE
 test_registry.py
 
 This is a test registry for use in development.
