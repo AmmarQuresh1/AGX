@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from pydantic import BaseModel
-from agx.core import agx_main 
+from agx_backend.agx.core import agx_main
 from fastapi.middleware.cors import CORSMiddleware
 # Slowapi for rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
