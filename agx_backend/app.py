@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from pydantic import BaseModel
@@ -37,8 +38,14 @@ def get_real_ip(request: Request):
         return xff.split(",")[0].strip()
     return request.client.host
 
+env = os.getenv('ENVIRONMENT')
+if env == "production":
+    redis_url = os.getenv("LOCAL_REDIS_URL")
+else:
+    redis_url = os.getenv("PROD_REDIS_URL")
+
 limiter = Limiter(key_func=get_real_ip,
-                  storage_uri="redis://:fa12cbe52d09461c98fd1e4a5e853304@fly-agx-backend-redis.upstash.io:6379") # redis://localhost:6379
+                  storage_uri=redis_url) 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
