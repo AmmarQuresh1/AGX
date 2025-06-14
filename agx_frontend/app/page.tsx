@@ -204,9 +204,117 @@ export default function Home() {
         >
           Download Script
         </button>
-
       </div>
 
+      {/* New parent container for centering and constraining width */}
+      <div
+        style={{
+          maxWidth: "1024px", // Adjust this value to match your app's main content width
+          margin: "0 auto",    // This is the magic for centering a block element
+          padding: "0 1rem",   // Adds some space on the sides for smaller screens
+          marginTop: 16
+        }}
+      >
+        {/* Your existing two-column flex container */}
+        <div
+          style={{
+            display: "flex",
+            maxWidth: 1000,
+            fontFamily: "sans-serif",
+            borderTop: "1px solid #e5e7eb",
+            marginTop: "2rem",
+            paddingTop: "2rem",
+            gap: "2rem",
+          }}
+        >
+          {/* Left Column: What is AGX? */}
+          <div style={{ flex: 1.5, paddingLeft: 10 }}>
+            <h3 style={{ marginTop: 0, fontSize: "1.25rem" }}>What is AGX?</h3>
+            <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
+              AGX is a deterministic AI engine that translates your commands into
+              reliable, production-ready workflows.
+            </p>
+            <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
+              This live showcase demonstrates our powerful "Zero to Deploy"
+              capability. We are actively expanding the function registry to cover
+              more clouds and services.
+            </p>
+            <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
+              <li style={{ marginBottom: "1rem" }}>
+                <strong>Zero Hallucinations. Guaranteed.</strong>
+                <p
+                  style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
+                >
+                  Our verification engine validates every execution plan before it
+                  runs, eliminating the random failures and unpredictable behavior
+                  of AI agents.
+                </p>
+              </li>
+              <li style={{ marginBottom: "1rem" }}>
+                <strong>Transparent & Auditable</strong>
+                <p
+                  style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
+                >
+                  AGX generates a clean Python script for every task. You see
+                  exactly what will happen, providing a clear and auditable
+                  workflow every time.
+                </p>
+              </li>
+              <li>
+                <strong>Built for Complex, Real-World Tasks</strong>
+                <p
+                  style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
+                >
+                  Our engine understands dependencies, allowing it to orchestrate
+                  multi-step processes like building an image, deploying it, and
+                  then monitoring the result.
+                </p>
+              </li>
+            </ul>
+          </div>
+
+          {/* Right Column: How do I use it? */}
+          <div
+            style={{
+              flex: 1,
+              borderLeft: "1px solid #e5e7eb",
+              paddingLeft: "2rem",
+              paddingRight: 10
+            }}
+          >
+            <h3 style={{ marginTop: 0, fontSize: "1.25rem" }}>How do I use it?</h3>
+            <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
+              The AGX engine can currently use the following tools to build a plan.
+              Try chaining them together in your prompt!
+              <br />
+              Here's a sample:{" "}
+              <code
+                style={{
+                  backgroundColor: "#f3f4f6",
+                  padding: "0.2rem 0.4rem",
+                  borderRadius: "4px",
+                  fontSize: "0.9em",
+                }}
+              >
+                Create a Dockerfile for a Python FastAPI application
+              </code>
+            </p>
+            <ul style={{ paddingLeft: 0, listStyle: "none" }}>
+              {/* ... The rest of your list items ... */}
+            </ul>
+            <p
+              style={{
+                color: "#4b5563",
+                lineHeight: 1.6,
+                marginTop: "1.5rem",
+              }}
+            >
+              <strong>Coming Soon:</strong> A powerful <strong>AGX CLI</strong> for full local
+              integration, plus deeper support for AWS, Kubernetes, GitHub Actions, and more.
+            </p>
+          </div>
+        </div>
+      </div>
       <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem" }}>
         Five plans a day for now.
       </p>
