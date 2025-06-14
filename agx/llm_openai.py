@@ -8,6 +8,7 @@ Calls openAI api to generate an output from prompt.
 
 from openai import OpenAI
 from dotenv import load_dotenv
+from pathlib import Path
 import os
 load_dotenv()
 
@@ -15,8 +16,8 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def generate_raw_json(task: str) -> str:
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    template_path = os.path.join(base_dir, "prompt_templates", "devops.txt")
+    current_dir = Path(__file__).parent
+    template_path = current_dir / "prompt_templates" / "devops.txt"
     with open(template_path, "r") as f:
         template = f.read()
 

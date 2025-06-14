@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { FiCopy } from "react-icons/fi";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
@@ -13,7 +15,7 @@ export default function Home() {
     e.preventDefault(); // Stops reload
     setDownloading(true);
     try {
-      const response = await fetch("/api", { // http://localhost:8000/
+      const response = await fetch("/api", { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +138,7 @@ export default function Home() {
         Output
         </h2>
         {/* PREFORMATTED BOX */}
-        <div style={{ position: "relative", width: "100%" }}>
+        <div style={{ position: "relative", width: "100%", marginBottom: 16 }}>
           <pre
             style={{
               background: "#f9f8f5",
@@ -192,7 +194,6 @@ export default function Home() {
             padding: "12px 24px",
             fontSize: "1.2rem",
             borderRadius: 6,
-            marginTop: 16,
             border: "1px solid #b3b2ae",
             background: !result ? "#faf8f5" : "#E0DBD1",
             color: !result ? "#999" : "#000000",
@@ -209,6 +210,8 @@ export default function Home() {
       <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem" }}>
         Five plans a day for now.
       </p>
+      <SpeedInsights />
+      <Analytics />
     </main>
   );
 }
