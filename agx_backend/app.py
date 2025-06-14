@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from pydantic import BaseModel
-from agx_backend.agx.core import agx_main
+from agx.core import agx_main
 from fastapi.middleware.cors import CORSMiddleware
 # Slowapi for rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -11,19 +11,6 @@ from slowapi.errors import RateLimitExceeded
 from redis import Redis
 
 app = FastAPI()
-
-# Allows requests from frontend on different port
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", 
-                   "https://www.agx.run",
-                   "https://vercel.com/ammars-projects-de451d5d/agx/Fj8ZgWqZ61x6XFs1BFyAJVq28rsA",
-                   "agx-sandy.vercel.app",
-                   "https://agx.run"],  # Or "*" to allow all
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Plan downloading
 class Script(BaseModel):
@@ -38,11 +25,8 @@ def get_real_ip(request: Request):
         return xff.split(",")[0].strip()
     return request.client.host
 
-env = os.getenv('ENVIRONMENT')
-if env == "production":
-    redis_url = os.getenv("LOCAL_REDIS_URL")
-else:
-    redis_url = os.getenv("PROD_REDIS_URL")
+
+redis_url = os.getenv("REDIS_URL")
 
 limiter = Limiter(key_func=get_real_ip,
                   storage_uri=redis_url) 
