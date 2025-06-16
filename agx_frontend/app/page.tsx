@@ -271,6 +271,16 @@ export default function Home() {
                 </p>
               </li>
             </ul>
+            <p
+              style={{
+                color: "#4b5563",
+                lineHeight: 1.6,
+                marginTop: "1.5rem", // Added margin for spacing
+              }}
+            >
+              <strong>Coming Soon:</strong> A powerful <strong>AGX CLI</strong> for full local
+              integration, plus deeper support for AWS, Kubernetes, GitHub Actions, and more.
+            </p>
           </div>
 
           {/* Right Column: How do I use it? */}
@@ -299,23 +309,22 @@ export default function Home() {
                 Create a Dockerfile for a Python FastAPI application
               </code>
             </p>
-            <ul style={{ paddingLeft: 0, listStyle: "none" }}>
-              {/* ... The rest of your list items ... */}
+            <h4 style={{ marginTop: "1rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Available Tools:</h4>
+            <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", color: "#4b5563", lineHeight: 1.6 }}>
+              <li style={{ marginBottom: "0.25rem" }}><code>check_docker_status</code>: Checks if Docker is running.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>build_docker_image</code>: Builds a Docker image.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>create_dockerfile</code>: Generates a Dockerfile.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>deploy_to_fly</code>: Deploys an application to Fly.io.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>scale_fly_app</code>: Scales a Fly.io application.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>get_app_status</code>: Gets the status of a Fly.io app.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>monitor_deployment</code>: Monitors a Fly.io deployment.</li>
+              <li style={{ marginBottom: "0.25rem" }}><code>cleanup_resources</code>: Cleans up Fly.io and Docker resources.</li>
+              {/* log_message is internal, so not listed for users */}
             </ul>
-            <p
-              style={{
-                color: "#4b5563",
-                lineHeight: 1.6,
-                marginTop: "1.5rem",
-              }}
-            >
-              <strong>Coming Soon:</strong> A powerful <strong>AGX CLI</strong> for full local
-              integration, plus deeper support for AWS, Kubernetes, GitHub Actions, and more.
-            </p>
           </div>
         </div>
       </div>
-      <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem" }}>
+      <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem", paddingBottom: "4rem", }}>
         Five plans a day for now.
       </p>
       <SpeedInsights />
