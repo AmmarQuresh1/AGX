@@ -30,6 +30,13 @@ h2 {
   font-weight: 500;
 }
 
+code {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 /* Scroll bars */
 ::-webkit-scrollbar {
   width: 8px;
