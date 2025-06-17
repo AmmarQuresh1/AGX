@@ -229,7 +229,7 @@ export default function Home() {
         >
           {/* Left Column: What is AGX? */}
           <div style={{ flex: 1.5, paddingLeft: 10 }}>
-            <h3 style={{ marginTop: 0, fontSize: "1.25rem" }}>What is AGX?</h3>
+            <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>What is AGX?</h3>
             <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
               AGX is a deterministic AI engine that translates your commands into
               reliable, production-ready workflows.
@@ -292,7 +292,7 @@ export default function Home() {
               paddingRight: 10
             }}
           >
-            <h3 style={{ marginTop: 0, fontSize: "1.25rem" }}>How do I use it?</h3>
+            <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>How do I use it?</h3>
             <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
               The AGX engine can currently use the following tools to build a plan.
               Try chaining them together in your prompt!
