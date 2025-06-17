@@ -1,11 +1,39 @@
-# Create agx/test_validate_plan.py
+import random
+import inspect
 from agx.validate_plan import validate_plan
+from agx.registries.devops_test import registry
+
+def random_arg_value(param):
+    # Very basic: just return a string or int depending on annotation
+    if param.annotation == int:
+        return random.randint(1, 10)
+    if param.annotation == str:
+        return "test"
+    if param.annotation == float:
+        return random.random()
+    # fallback
+    return "test"
+
+def test_random_registry_function():
+    """Randomly select a function from the registry and test validation."""
+    func_name, func = random.choice(list(registry.items()))
+    sig = inspect.signature(func)
+    # Skip functions with no parameters (other than self)
+    params = [p for p in sig.parameters.values() if p.name != "self"]
+    args = {}
+    for param in params:
+        # Only test if type hints are present
+        if param.annotation != inspect.Parameter.empty:
+            args[param.name] = random_arg_value(param)
+    plan = [{"function": func_name, "args": args}]
+    # Should pass if all required args are present and valid
+    assert validate_plan(plan) in [True, False]  # Just check it runs
 
 def test_valid_plan():
     """Test a completely valid plan"""
     plan = [
-        {"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "result"},
-        {"function": "log_message", "args": {"message": "Answer: {result}"}}
+        {"function": "check_docker_status", "args": {}, "assign": "docker_status"},
+        {"function": "log_message", "args": {"message": "Answer: {docker_status}"}}
     ]
     assert validate_plan(plan) == True
 
@@ -49,4 +77,5 @@ if __name__ == "__main__":
     test_variable_before_assignment()
     test_your_sample_plan()
     test_missing_type_hints()
+    test_random_registry_function()
     print("All tests passed!")

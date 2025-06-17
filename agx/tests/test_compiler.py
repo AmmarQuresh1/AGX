@@ -1,4 +1,6 @@
+import random
 from agx.compiler import compile_plan
+from agx.registries.devops_test import registry
 
 def test_simple_function_call():
     """Test basic function call generation"""
@@ -11,20 +13,21 @@ def test_simple_function_call():
 
 def test_function_with_assignment():
     """Test function call with variable assignment"""
-    plan = [{"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "result"}]
+    plan = [{"function": "build_docker_image", "args": {"image_name": "test_image", "dockerfile_path": "./app"}, "assign": "image_status"}]
     code = compile_plan(plan)
     
-    assert "result = add_numbers(a=2, b=3)" in code
+    assert "image_status = build_docker_image(image_name='test_image', dockerfile_path='./app')" in code
 
 def test_variable_reference():
-    """Test {variable} substitution in strings"""
+    """Test {variable} substitution in strings with registry functions"""
     plan = [
-        {"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "sum"},
-        {"function": "log_message", "args": {"message": "Result: {sum}"}}
+        {"function": "build_docker_image", "args": {"image_name": "test_image", "dockerfile_path": "./app"}, "assign": "build_status"},
+        {"function": "log_message", "args": {"message": "Build result: {build_status}"}}
     ]
     code = compile_plan(plan)
     
-    assert 'log_message(message=f"Result: {sum}")' in code
+    assert "build_status = build_docker_image(image_name='test_image', dockerfile_path='./app')" in code
+    assert 'log_message(message=f"Build result: {build_status}")' in code
 
 def test_function_deduplication():
     """Test that duplicate functions aren't included twice"""
@@ -42,10 +45,10 @@ def test_function_deduplication():
 
 def test_multiple_data_types():
     """Test different argument types are handled correctly"""
-    plan = [{"function": "add_numbers", "args": {"a": 2, "b": 3.5}}]
+    plan = [{"function": "create_dockerfile", "args": {"app_type": "python", "port": 8080}}]
     code = compile_plan(plan)
     
-    assert "add_numbers(a=2, b=3.5)" in code
+    assert "create_dockerfile(app_type='python', port=8080)" in code
 
 def test_empty_plan():
     """Test empty plan generates valid code"""
@@ -57,7 +60,7 @@ def test_empty_plan():
 
 def test_generated_code_is_executable():
     """Test that generated code can be executed without errors"""
-    plan = [{"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "result"}]
+    plan = [{"function": "build_docker_image", "args": {"image_name": "test_image", "dockerfile_path": "./app"}, "assign": "result"}]
     code = compile_plan(plan)
     
     # This should not raise any exceptions
@@ -66,12 +69,12 @@ def test_generated_code_is_executable():
 def test_complex_plan():
     """Test a multi-step plan with variables"""
     plan = [
-        {"function": "add_numbers", "args": {"a": 5, "b": 10}, "assign": "sum1"},
-        {"function": "add_numbers", "args": {"a": 2, "b": 3}, "assign": "sum2"}, 
-        {"function": "log_message", "args": {"message": "First: {sum1}, Second: {sum2}"}}
+        {"function": "build_docker_image", "args": {"image_name": "img1", "dockerfile_path": "./app"}, "assign": "build1"},
+        {"function": "build_docker_image", "args": {"image_name": "img2", "dockerfile_path": "./app2"}, "assign": "build2"}, 
+        {"function": "log_message", "args": {"message": "First: {build1}, Second: {build2}"}}
     ]
     code = compile_plan(plan)
     
-    assert "sum1 = add_numbers(a=5, b=10)" in code
-    assert "sum2 = add_numbers(a=2, b=3)" in code
-    assert 'log_message(message=f"First: {sum1}, Second: {sum2}")' in code
+    assert "build1 = build_docker_image(image_name='img1', dockerfile_path='./app')" in code
+    assert "build2 = build_docker_image(image_name='img2', dockerfile_path='./app2')" in code
+    assert 'log_message(message=f"First: {build1}, Second: {build2}")' in code
