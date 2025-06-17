@@ -44,10 +44,10 @@ def build_docker_image(image_name: str, dockerfile_path: str = ".") -> str:
         ], capture_output=True, text=True, check=True)
         
         build_time = round(time.time() - start_time, 2)
-        return f"✅ Image '{image_name}' built successfully in {build_time}s"
+        return f"Image '{image_name}' built successfully in {build_time}s"
         
     except subprocess.CalledProcessError as e:
-        return f"❌ Build failed: {e.stderr}"
+        return f"Build failed: {e.stderr}"
 
 def deploy_to_fly(app_name: str, region: str = "ord") -> str:
     """Deploy application to Fly.io"""
@@ -74,12 +74,12 @@ def deploy_to_fly(app_name: str, region: str = "ord") -> str:
         
         deploy_time = round(time.time() - start_time, 2)
         
-        return f"🚀 Deployed {app_name} to Fly.io in {deploy_time}s\n📍 Region: {region}\n🌐 URL: https://{app_name}.fly.dev"
+        return f"Deployed {app_name} to Fly.io in {deploy_time}s\n Region: {region}\n URL: https://{app_name}.fly.dev"
         
     except subprocess.CalledProcessError as e:
-        return f"❌ Deployment failed: {e.stderr}"
+        return f"Deployment failed: {e.stderr}"
     except FileNotFoundError:
-        return "❌ flyctl not installed. Install with: curl -L https://fly.io/install.sh | sh"
+        return "flyctl not installed. Install with: curl -L https://fly.io/install.sh | sh"
 
 def scale_fly_app(app_name: str, instances: int) -> str:
     """Scale Fly.io application instances"""
@@ -93,10 +93,10 @@ def scale_fly_app(app_name: str, instances: int) -> str:
             '-a', app_name
         ], capture_output=True, text=True, check=True)
         
-        return f"📈 Scaled {app_name} to {instances} instances"
+        return f"Scaled {app_name} to {instances} instances"
         
     except subprocess.CalledProcessError as e:
-        return f"❌ Scaling failed: {e.stderr}"
+        return f"Scaling failed: {e.stderr}"
 
 def get_app_status(app_name: str) -> str:
     """Get comprehensive status of deployed application"""
@@ -116,7 +116,7 @@ def get_app_status(app_name: str) -> str:
         logs_result = subprocess.run(['flyctl', 'logs', '-a', app_name, '--limit', '5'], 
                                    capture_output=True, text=True, check=True)
         
-        return f"""📊 App Status for {app_name}:
+        return f"""App Status for {app_name}:
 Status: {app_status}
 Instances: {instances}
 URL: https://{app_name}.fly.dev
@@ -125,9 +125,9 @@ Recent Logs:
 {logs_result.stdout[-200:]}"""
         
     except subprocess.CalledProcessError as e:
-        return f"❌ Status check failed: {e.stderr}"
+        return f"Status check failed: {e.stderr}"
     except json.JSONDecodeError:
-        return f"❌ Failed to parse status data"
+        return f"Failed to parse status data"
 
 def create_dockerfile(app_type: str = "node", port: int = 3000) -> str:
     """Generate a Dockerfile for common application types"""
@@ -167,9 +167,9 @@ CMD ["./main"]"""
     try:
         with open("Dockerfile", "w") as f:
             f.write(dockerfile_content)
-        return f"✅ Created Dockerfile for {app_type} app (port {port})"
+        return f"Created Dockerfile for {app_type} app (port {port})"
     except Exception as e:
-        return f"❌ Failed to create Dockerfile: {e}"
+        return f"Failed to create Dockerfile: {e}"
 
 def monitor_deployment(app_name: str, duration: int = 60) -> str:
     """Monitor deployment metrics and logs"""
@@ -200,14 +200,14 @@ def monitor_deployment(app_name: str, duration: int = 60) -> str:
         
         avg_health = sum(m["healthy_instances"] for m in metrics) / len(metrics) if metrics else 0
         
-        return f"""📈 Monitoring Report for {app_name}:
+        return f"""Monitoring Report for {app_name}:
 Duration: {duration}s
 Average healthy instances: {avg_health:.1f}
 Total checks: {len(metrics)}
-Status: {"✅ Stable" if avg_health > 0 else "⚠️ Issues detected"}"""
+Status: {"Stable" if avg_health > 0 else "Issues detected"}"""
         
     except subprocess.CalledProcessError as e:
-        return f"❌ Monitoring failed: {e.stderr}"
+        return f"Monitoring failed: {e.stderr}"
 
 def cleanup_resources(app_name: str) -> str:
     """Clean up deployment resources"""
@@ -227,10 +227,10 @@ def cleanup_resources(app_name: str) -> str:
         except subprocess.CalledProcessError:
             pass  # Image might not exist
         
-        return f"🧹 Cleaned up resources for {app_name}"
+        return f"Cleaned up resources for {app_name}"
         
     except subprocess.CalledProcessError as e:
-        return f"❌ Cleanup failed: {e.stderr}"
+        return f"Cleanup failed: {e.stderr}"
 
 registry = {
     "log_message": log_message,
