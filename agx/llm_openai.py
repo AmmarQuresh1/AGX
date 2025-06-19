@@ -6,16 +6,26 @@ Calls openAI api to generate an output from prompt.
 - The prompts are usually requesting for output in JSON that gets parsed by planner.py.
 """
 
-from openai import OpenAI
-from dotenv import load_dotenv
 from pathlib import Path
+from dotenv import load_dotenv
 import os
+
+try:  # pragma: no cover - just setup logic
+    from openai import OpenAI  # type: ignore
+except Exception:  # openai might not be installed
+    OpenAI = None  # type: ignore
+
 load_dotenv()
 
-# Make sure you've set OPENAI_API_KEY in your .env
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Only create a client if openai is available and an API key is provided
+_api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=_api_key) if OpenAI and _api_key else None
 
 def generate_raw_json(task: str) -> str:
+    if client is None:
+        raise RuntimeError(
+            "OpenAI client is not configured. Install the openai package and set OPENAI_API_KEY."
+        )
     current_dir = Path(__file__).parent
     template_path = current_dir / "prompt_templates" / "devops.txt"
     with open(template_path, "r") as f:
