@@ -24,15 +24,6 @@ def agx_main(prompt: Optional[str] = None):
         generate_code = compile_plan(plan)
 
         if generate_code:
-            # Save the generated code to downloads folder (cross-platform)
-            # downloads_dir = Path.home() / "Downloads"
-            # output_file = downloads_dir / "generated_plan.py"
-            
-            # with open(output_file, "w") as f:
-            #     f.write(generate_code)
-            # REDUNDANT
-            print("[AGX] Plan compiled successfully! Check generated_plan.py")
-            print("[AGX] Run with: python generated_plan.py")
             return generate_code
         else:
             print("[AGX] Compilation failed.")
