@@ -71,7 +71,7 @@ export default function Home() {
         paddingTop: "4rem",
         background: "var(--background)",
         color: "var(--foreground)",
-      }}
+      }} 
     >
       <div
         style={{
