@@ -23,9 +23,7 @@ def generate_raw_json(task: str) -> str:
 
     prompt = template.replace("{{TASK}}", task)
 
-    print("=== Prompt Sent to GPT ===")
-    print(prompt)
-    print("================================")
+    print("Prompt Sent to GPT")
 
     response = client.chat.completions.create(
         model="gpt-4.1-mini-2025-04-14",  # or"o3-mini-2025-01-31" or "gpt-4o-2024-08-06"
