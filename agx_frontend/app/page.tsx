@@ -324,7 +324,9 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <p style={{ marginTop: 24, color: "#444", fontSize: "1.1rem", paddingBottom: "4rem", }}>
+      {/*footer*/}
+      <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", marginTop: 30, fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX</a>
+      <p style={{ marginTop: 8, color: "#444", fontSize: "1.1rem", paddingBottom: "4rem", }}>
         Five plans a day for now.
       </p>
       <SpeedInsights />
