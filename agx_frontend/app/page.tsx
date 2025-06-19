@@ -246,7 +246,7 @@ export default function Home() {
                   style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                 >
                   Our verification engine validates every execution plan before it
-                  runs, eliminating the random failures and unpredictable behavior
+                  runs, eliminating the random failures and unpredictable behaviour
                   of AI agents.
                 </p>
               </li>
