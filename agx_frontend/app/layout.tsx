@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AGX",
-  description: "Python plan generator",
+  title: "AGX: Deterministic AI for DevOps Automation",
+  description: "AGX is a deterministic AI engine that translates natural language into reliable, production-ready DevOps workflows. Zero hallucinations, guaranteed.",
 };
 
 export default function RootLayout({
