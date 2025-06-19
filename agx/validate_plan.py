@@ -99,10 +99,10 @@ def validate_plan(plan):
 
     #  ============ RETURN RESULTS ============
     if errors:
-        print("Plan validation failed:")
+        print("[AGX Validator] Plan validation failed:")
         for error in errors:
             print(error)
         return False
 
-    print("Plan validation passed.")
+    print("[AGX Validator] Plan validation passed.")
     return True
