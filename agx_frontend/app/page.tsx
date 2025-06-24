@@ -231,8 +231,7 @@ export default function Home() {
           <div style={{ flex: 1.5, paddingLeft: 10 }}>
             <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>What is AGX?</h3>
             <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
-              AGX is a deterministic AI engine that translates your commands into
-              reliable, production-ready workflows.
+              AGX is a verifiable AI engine that translates your commands into reliable, production-ready workflows.
             </p>
             <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
               This live showcase demonstrates our powerful "Zero to Deploy"
@@ -245,9 +244,9 @@ export default function Home() {
                 <p
                   style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                 >
-                  Our verification engine validates every execution plan before it
-                  runs, eliminating the random failures and unpredictable behaviour
-                  of AI agents.
+                  Our verification engine validates every execution plan against a 
+                  registry of approved functions before it runs, eliminating the random failures 
+                  and unpredictable behaviour of typical AI agents.
                 </p>
               </li>
               <li style={{ marginBottom: "1rem" }}>
@@ -306,7 +305,7 @@ export default function Home() {
                   fontSize: "0.9em",
                 }}
               >
-                Create a Dockerfile for a Python FastAPI application
+                Create a Dockerfile for a Python FastAPI application, build the image, and then deploy it to Fly.io.
               </code>
             </p>
             <h4 style={{ marginTop: "1rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Available Tools:</h4>
