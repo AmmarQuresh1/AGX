@@ -82,15 +82,19 @@ export default function Home() {
           alignItems: "center"
         }}
       >
-        <img
-          src="/resources/agx_white.png"
-          alt="AGX Logo"
-          style={{
-             height: 40, 
-             textAlign: "left",
-             marginBottom: 32
-             }}
-        />
+        {/* The logo is now the H1. The style resets browser defaults. */}
+        <h1 style={{ margin: 0, fontWeight: 'normal', fontSize: '1rem' }}>
+          <img
+            src="/resources/agx_white.png"
+            // Bonus: Improved alt text for SEO and accessibility
+            alt="AGX: The Verifiable AI Workflow Engine for DevOps"
+            style={{
+               height: 40,
+               display: 'block', // Good practice for images in blocks
+               marginBottom: 32
+            }}
+          />
+        </h1>
 
         <h2 style={{ marginBottom: 24 }}>
           Describe what you want to automate...
