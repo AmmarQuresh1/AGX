@@ -112,8 +112,8 @@ export default function Home() {
           alignItems: "center"
         }}
       >
-        {/* The logo is now the H1. The style resets browser defaults. */}
-        <h1 style={{ margin: 0, fontWeight: 'normal', fontSize: '1rem' }}>
+        {/* The logo is now in a div, not an H1. */}
+        <div style={{ margin: 0, fontWeight: 'normal', fontSize: '1rem' }}>
           <img
             src="/resources/agx_white.png"
             // Bonus: Improved alt text for SEO and accessibility
@@ -124,7 +124,7 @@ export default function Home() {
                marginBottom: 32
             }}
           />
-        </h1>
+        </div>
 
         {/* Hero Section */}
         <div style={{ 
@@ -136,6 +136,7 @@ export default function Home() {
           alignItems: "center",
           marginBottom: 64 
         }}>
+          {/* This is now the single, correct H1 for the page */}
           <h1 style={{ 
             fontSize: "3rem", 
             fontWeight: 700, 
@@ -143,7 +144,7 @@ export default function Home() {
             lineHeight: 1.1,
             margin: "0 0 32px 0"
           }}>
-            AI Workflows You Can Actually Trust
+            From Prompt to Verified DevOps Automation
           </h1>
           <p style={{ 
             fontSize: "1.3rem", 
