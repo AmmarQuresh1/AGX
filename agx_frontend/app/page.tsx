@@ -186,7 +186,7 @@ export default function Home() {
           </h2>
 
           {/* Responsive form container */}
-          <div className="prompt-form-container" style={{ width: "100%", maxWidth: 600, margin: "0 auto" }}>
+          <div className="prompt-form-container" style={{ width: "100%", maxWidth: "90%", margin: "0 auto" }}>
             <form onSubmit={handleSubmit} className="prompt-form" style={{ 
               display: "flex", 
               marginTop: 8,
