@@ -43,3 +43,53 @@ code {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* This is the container for your two columns */
+.roadmap-container {
+  display: flex;
+  flex-direction: row; /* Side-by-side on desktop */
+}
+
+/* When the screen is narrower than 768px (a typical tablet/mobile breakpoint) */
+@media (max-width: 768px) {
+  .roadmap-container {
+    flex-direction: column; /* Stack vertically on mobile */
+    gap: 2rem;
+  }
+  .roadmap-container > div {
+    border-left: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+.prompt-form-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.prompt-form {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.prompt-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.prompt-btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .prompt-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .prompt-btn {
+    width: 100%;
+  }
+}
