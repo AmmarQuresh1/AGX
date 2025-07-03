@@ -343,13 +343,13 @@ export default function Home() {
                 AGX is a verifiable AI engine that translates your commands into reliable, production-ready workflows.
               </p>
               <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
-                This live showcase demonstrates our powerful <strong>"Zero to Deploy"</strong>
-                capability. We are actively expanding the function registry to cover
+                This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan.</strong>
+                We are actively expanding the function registry to cover
                 more clouds and services.
               </p>
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
                 <li style={{ marginBottom: "1rem" }}>
-                  <strong>🛡️ Zero Hallucinations. Guaranteed.</strong>
+                  <strong>🛡️ Reliable by Design. No Hallucinations.</strong>
                   <p
                     style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                   >
@@ -373,7 +373,7 @@ export default function Home() {
                   <p
                     style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                   >
-                    Our engine understands <strong>dependencies</strong>, allowing it to orchestrate
+                    With built-in <strong>dependency resolution</strong>, the engine can orchestrate
                     multi-step processes like building an image, deploying it, and
                     then monitoring the result.
                   </p>
@@ -461,8 +461,8 @@ export default function Home() {
                   fontSize: "0.95em", 
                   lineHeight: 1.5 
                 }}>
-                  <strong>Want early access?</strong> We're building this with real DevOps teams. 
-                  Reach out to share your use case and get priority access to the CLI beta.
+                  <strong>Interested in the CLI?</strong> I'm developing it with feedback from real-world DevOps teams. 
+                  Reach out to discuss your use case and get priority access to the beta.
                 </p>
               </div>
             </div>
