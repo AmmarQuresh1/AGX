@@ -343,10 +343,11 @@ export default function Home() {
                 AGX is a verifiable AI engine that translates your commands into reliable, production-ready workflows.
               </p>
               <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
-                This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan.</strong>
+                This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan. </strong>
                 We are actively expanding the function registry to cover
                 more clouds and services.
               </p>
+              <br />
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
                 <li style={{ marginBottom: "1rem" }}>
                   <strong>🛡️ Reliable by Design. No Hallucinations.</strong>
