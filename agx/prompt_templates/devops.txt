@@ -31,12 +31,8 @@ What is NOT a valid instruction:
 - asking for a dangerous task
 
 Available functions:
-- log_message(message: str) -> None # Prints out a message
-- check_docker_status() -> str # Check if Docker is running and get basic info
-- build_docker_image(image_name: str, dockerfile_path: str = ".") -> str # Build a Docker image from Dockerfile
-- deploy_to_fly(app_name: str, region: str = "ord") -> str # Deploy application to Fly.io
-- scale_fly_app(app_name: str, instances: int) -> str # Scale Fly.io application instances
-- get_app_status(app_name: str) -> str # Get comprehensive status of deployed application
-- create_dockerfile(app_type: str = "node", port: int = 3000) -> str # Generate a Dockerfile for common application types
-- monitor_deployment(app_name: str, duration: int = 60) -> str # Monitor deployment metrics and logs
-- cleanup_resources(app_name: str) -> str # Clean up deployment resources
+- log_message(message: str) -> None: # Prints out a message
+- set_bucket_name(name: str) -> str: # Returns the same string given in parameter. Use for consistency.
+- create_aws_s3_bucket(bucket_name: str) -> str: # Generates HCL for creating an aws s3 bucket
+- aws_s3_bucket_public_access_block(bucket_name: str, block_all_public: bool = True) -> str: # Sets public access for a s3 bucket
+- save_hcl_to_file(hcl_content: str, filename: str = "main.tf") -> str: # Saves the provided HCL content to a .tf file.
