@@ -13,21 +13,21 @@ def test_simple_function_call():
 
 def test_function_with_assignment():
     """Test function call with variable assignment"""
-    plan = [{"function": "build_docker_image", "args": {"image_name": "test_image", "dockerfile_path": "./app"}, "assign": "image_status"}]
+    plan = [{"function": "set_bucket_name", "args": {"name": "agx-demo-123"}, "assign": "bucket_name"}]
     code = compile_plan(plan)
     
-    assert "image_status = build_docker_image(image_name='test_image', dockerfile_path='./app')" in code
+    assert "bucket_name = set_bucket_name(name='agx-demo-123')" in code
 
 def test_variable_reference():
     """Test {variable} substitution in strings with registry functions"""
     plan = [
-        {"function": "build_docker_image", "args": {"image_name": "test_image", "dockerfile_path": "./app"}, "assign": "build_status"},
-        {"function": "log_message", "args": {"message": "Build result: {build_status}"}}
+        {"function": "set_bucket_name", "args": {"name": "agx-demo-123"}, "assign": "bucket"},
+        {"function": "log_message", "args": {"message": "Bucket: {bucket}"}}
     ]
     code = compile_plan(plan)
     
-    assert "build_status = build_docker_image(image_name='test_image', dockerfile_path='./app')" in code
-    assert 'log_message(message=f"Build result: {build_status}")' in code
+    assert "bucket = set_bucket_name(name='agx-demo-123')" in code
+    assert 'log_message(message=f"Bucket: {bucket}")' in code
 
 def test_function_deduplication():
     """Test that duplicate functions aren't included twice"""
@@ -45,10 +45,10 @@ def test_function_deduplication():
 
 def test_multiple_data_types():
     """Test different argument types are handled correctly"""
-    plan = [{"function": "create_dockerfile", "args": {"app_type": "python", "port": 8080}}]
+    plan = [{"function": "aws_s3_bucket_public_access_block", "args": {"bucket_name": "agx-demo-123", "block_all_public": True}}]
     code = compile_plan(plan)
     
-    assert "create_dockerfile(app_type='python', port=8080)" in code
+    assert "aws_s3_bucket_public_access_block(bucket_name='agx-demo-123', block_all_public=True)" in code
 
 def test_empty_plan():
     """Test empty plan generates valid code"""
@@ -60,7 +60,7 @@ def test_empty_plan():
 
 def test_generated_code_is_executable():
     """Test that generated code can be executed without errors"""
-    plan = [{"function": "build_docker_image", "args": {"image_name": "test_image", "dockerfile_path": "./app"}, "assign": "result"}]
+    plan = [{"function": "set_bucket_name", "args": {"name": "agx-demo-123"}, "assign": "result"}]
     code = compile_plan(plan)
     
     # This should not raise any exceptions
@@ -69,12 +69,12 @@ def test_generated_code_is_executable():
 def test_complex_plan():
     """Test a multi-step plan with variables"""
     plan = [
-        {"function": "build_docker_image", "args": {"image_name": "img1", "dockerfile_path": "./app"}, "assign": "build1"},
-        {"function": "build_docker_image", "args": {"image_name": "img2", "dockerfile_path": "./app2"}, "assign": "build2"}, 
-        {"function": "log_message", "args": {"message": "First: {build1}, Second: {build2}"}}
+        {"function": "set_bucket_name", "args": {"name": "agx-a"}, "assign": "b1"},
+        {"function": "set_bucket_name", "args": {"name": "agx-b"}, "assign": "b2"}, 
+        {"function": "log_message", "args": {"message": "First: {b1}, Second: {b2}"}}
     ]
     code = compile_plan(plan)
     
-    assert "build1 = build_docker_image(image_name='img1', dockerfile_path='./app')" in code
-    assert "build2 = build_docker_image(image_name='img2', dockerfile_path='./app2')" in code
-    assert 'log_message(message=f"First: {build1}, Second: {build2}")' in code
+    assert "b1 = set_bucket_name(name='agx-a')" in code
+    assert "b2 = set_bucket_name(name='agx-b')" in code
+    assert 'log_message(message=f"First: {b1}, Second: {b2}")' in code
