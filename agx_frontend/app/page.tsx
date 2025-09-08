@@ -30,7 +30,7 @@ export default function Home() {
       body: JSON.stringify({ prompt }),
     }).then(async (response) => {
       if (response.status == 429) {
-        throw new Error("Rate limit reached: 5 plans per day. Please try again tommorow.");
+        throw new Error("Rate limit reached: 5 plans per day. Please try again tomorrow.");
       }
       if (!response.ok) throw new Error("Failed to get code.");
       
@@ -154,7 +154,18 @@ export default function Home() {
             maxWidth: 600,
             margin: "0 auto 48px auto"
           }}>
-            AGX uses AI to generate structured JSON plans which are then statically validated against a pre-vetted function library before being compiled into production-ready code.
+            AGX generates structured JSON plans, validates them against a pre‑vetted function library, then compiles them into executable code.
+          </p>
+          <p style={{ 
+            fontSize: "1.1rem", 
+            color: "#6b7280", 
+            marginTop: -24,
+            marginBottom: 48, 
+            lineHeight: 1.5,
+            maxWidth: 600,
+            margin: "0 auto 48px auto"
+          }}>
+            Live demo: natural‑language prompt → JSON plan → validator check → compiled script.
           </p>
           <button
             onClick={() => {
@@ -197,7 +208,7 @@ export default function Home() {
               <input
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Enter your prompt"
+                placeholder={'e.g., "Create a Dockerfile for a FastAPI app on port 8000 and deploy to Fly.io"'}
                 className="prompt-input"
                 style={{
                   flex: 1,
@@ -236,6 +247,9 @@ export default function Home() {
           {/* PREFORMATTED BOX */}
           <div style={{ position: "relative", width: "100%", marginBottom: 16 }}>
             <pre
+              role="status"
+              aria-live="polite"
+              aria-busy={downloading ? "true" : "false"}
               style={{
                 background: "#f9f8f5",
                 padding: 16,
@@ -253,13 +267,15 @@ export default function Home() {
               }}
             >
               {downloading && processingStep > 0 ? (
-                processingStep === 1 ? "[1/3] GENERATING JSON PLAN..." :
-                processingStep === 2 ? "[2/3] VERIFYING PLAN AGAINST FUNCTION REGISTRY..." :
-                "[3/3] COMPILING SECURE PYTHON SCRIPT..."
+                processingStep === 1 ? "[1/3] Generating JSON plan…" :
+                processingStep === 2 ? "[2/3] Validating plan against function registry…" :
+                "[3/3] Compiling verified Python script…"
               ) : result}
             </pre>
             <button
               type="button"
+              title={copied ? "Copied!" : "Copy to clipboard"}
+              aria-label="Copy output to clipboard"
               onClick={() => {
                 if (result) {
                   navigator.clipboard.writeText(result);
@@ -288,6 +304,7 @@ export default function Home() {
           </div>
           <button
             type="button"
+            title={!result ? "Generate a script first" : "Download the generated script"}
             onClick={handleDownload}
             disabled={!result}
             style={{
@@ -321,7 +338,7 @@ export default function Home() {
             marginBottom: 32,
             marginTop: 48
           }}>
-            The Engine and The Roadmap
+            About the Engine
           </h2>
           
           {/* Responsive two-column container */}
@@ -340,27 +357,25 @@ export default function Home() {
             <div style={{ flex: 1.5, paddingLeft: 10 }}>
               <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>About the Showcase Engine</h3>
               <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
-                AGX is a verifiable AI engine that translates your commands into reliable, production-ready workflows.
+                AGX is a verifiable AI engine that translates your commands into reliable, executable workflows.
               </p>
               <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
-                This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan. </strong>
-                We are actively expanding the function registry to cover
-                more clouds and services.
+                This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan.</strong>
               </p>
               <br />
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
                 <li style={{ marginBottom: "1rem" }}>
-                  <strong>🛡️ Reliable by Design. No Hallucinations.</strong>
+                  <strong>Reliable by design. Hallucination‑resistant.</strong>
                   <p
                     style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                   >
-                    Our <strong>verification engine</strong> validates every execution plan against a 
-                    registry of approved functions before it runs, eliminating the random failures 
-                    and unpredictable behaviour of typical AI agents.
+                    Our <strong>verification engine</strong> validates every execution plan against a
+                    registry of approved functions before it runs, preventing unapproved actions and
+                    reducing the unpredictable behaviour of typical AI agents.
                   </p>
                 </li>
                 <li style={{ marginBottom: "1rem" }}>
-                  <strong>👀 Transparent & Auditable</strong>
+                  <strong>Transparent & auditable</strong>
                   <p
                     style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                   >
@@ -370,7 +385,7 @@ export default function Home() {
                   </p>
                 </li>
                 <li>
-                  <strong>⚙️ Built for Complex, Real-World Tasks</strong>
+                  <strong>Built for real workflows</strong>
                   <p
                     style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
                   >
@@ -381,7 +396,7 @@ export default function Home() {
                 </li>
               </ul>
               
-              <h4 style={{ marginTop: "1.5rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Available Tools:</h4>
+              <h4 style={{ marginTop: "1.5rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Available tools (demo subset):</h4>
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", color: "#4b5563", lineHeight: 1.6 }}>
                 <li style={{ marginBottom: "0.25rem" }}><code>check_docker_status</code>: Checks if Docker is running.</li>
                 <li style={{ marginBottom: "0.25rem" }}><code>build_docker_image</code>: Builds a Docker image.</li>
@@ -408,71 +423,12 @@ export default function Home() {
             </div>
 
             {/* Right Column: The Future */}
-            <div
-              style={{
-                flex: 1,
-                borderLeft: "1px solid #e5e7eb",
-                paddingLeft: "2rem",
-                paddingRight: 10
-              }}
-            >
-              <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>The Future: The AGX CLI</h3>
-              <p style={{ color: "#4b5563", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-                The next evolution of AGX is a powerful, context-aware CLI designed for professional DevOps workflows. It will bring the same verifiable engine to your local machine, with state management, file system access, and deep integrations with AWS, Kubernetes, and more.
-              </p>
-              
-              <h4 style={{ marginTop: "1rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Coming Features:</h4>
-              <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", color: "#4b5563", lineHeight: 1.6 }}>
-                <li style={{ marginBottom: "0.75rem" }}>
-                  <strong>Local State Management</strong>
-                  <p style={{ margin: "0.25em 0", color: "#6b7280", fontSize: "0.95em" }}>
-                    Track deployments, resources, and configurations across your entire infrastructure.
-                  </p>
-                </li>
-                <li style={{ marginBottom: "0.75rem" }}>
-                  <strong>AWS Integration</strong>
-                  <p style={{ margin: "0.25em 0", color: "#6b7280", fontSize: "0.95em" }}>
-                    Deploy to EC2, Lambda, ECS, and manage RDS databases with natural language commands.
-                  </p>
-                </li>
-                <li style={{ marginBottom: "0.75rem" }}>
-                  <strong>Kubernetes Orchestration</strong>
-                  <p style={{ margin: "0.25em 0", color: "#6b7280", fontSize: "0.95em" }}>
-                    Generate and apply manifests, manage deployments, and scale workloads safely.
-                  </p>
-                </li>
-                <li style={{ marginBottom: "0.75rem" }}>
-                  <strong>GitHub Actions Integration</strong>
-                  <p style={{ margin: "0.25em 0", color: "#6b7280", fontSize: "0.95em" }}>
-                    Generate CI/CD pipelines that integrate seamlessly with your verification engine.
-                  </p>
-                </li>
-              </ul>
-              
-              <div style={{ 
-                background: "#f8fafc", 
-                border: "1px solid #e2e8f0", 
-                borderRadius: "8px", 
-                padding: "1rem", 
-                marginTop: "1.5rem" 
-              }}>
-                <p style={{ 
-                  margin: 0, 
-                  color: "#475569", 
-                  fontSize: "0.95em", 
-                  lineHeight: 1.5 
-                }}>
-                  <strong>Interested in the CLI?</strong> I'm developing it with feedback from real-world DevOps teams. 
-                  Reach out to discuss your use case and get priority access to the beta.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
         {/*footer*/}
         <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", marginTop: 30, fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX</a>
         <p style={{ marginTop: 8, color: "#444", fontSize: "1.1rem", paddingBottom: "4rem", }}>
-          Five plans a day for now.
+          You can generate up to five plans per day.
         </p>
         <SpeedInsights />
         <Analytics />
