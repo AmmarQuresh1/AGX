@@ -1,0 +1,161 @@
+Metadata-Version: 2.4
+Name: agx-cli
+Version: 0.1.0
+Summary: The AGX CLI for verifiable AI workflows.
+Author: Ammar Qureshi
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: typer[all]
+
+# AGX: The Verifiable AI Workflow Engine for DevOps
+
+AGX is a verifiable AI engine that translates natural language into reliable DevOps workflows by statically analyzing execution plans. Zero hallucinations, guaranteed.
+
+## What Makes AGX Different
+
+Unlike traditional AI wrappers, AGX uses a **three-stage verification process**:
+
+1. **🧠 Generate JSON Plan**: AI creates a structured execution plan
+2. **🛡️ Static Verification**: Plan is validated against a pre-vetted function registry
+3. **⚙️ Compile to Python**: Verified plan becomes production-ready code
+
+This approach eliminates hallucinations and ensures every generated workflow is safe and executable.
+
+## Live Demo
+
+Try AGX in action: [https://agx.run](https://agx.run)
+
+## Current Capabilities
+
+AGX currently supports "Zero to Deploy" workflows with these validated functions:
+
+- **Docker Operations**: `check_docker_status`, `build_docker_image`, `create_dockerfile`
+- **Fly.io Deployment**: `deploy_to_fly`, `scale_fly_app`, `get_app_status`
+- **Monitoring**: `monitor_deployment`, `cleanup_resources`
+- **Utilities**: `log_message`
+
+### Example Usage
+
+```
+Create a Dockerfile for a Python FastAPI application on port 8000, build the image, and deploy it to Fly.io
+```
+
+AGX will generate a verified Python script that:
+1. Creates an optimized Dockerfile
+2. Builds the Docker image
+3. Deploys to Fly.io
+4. Monitors the deployment
+
+## Architecture
+
+```
+User Prompt → JSON Plan → Static Verification → Python Script
+     ↓             ↓              ↓               ↓
+   Natural      Structured    Safety Check    Executable
+  Language       Plan         Complete         Code
+```
+
+### Core Components
+
+- **`agx/`**: Core verification engine
+  - `llm_openai.py`: AI plan generation
+  - `planner.py`: Static verification and compilation
+  - `registry.py`: Pre-vetted function library
+  - `prompt_templates/`: Structured prompts for different models
+
+- **`agx_frontend/`**: Next.js web interface
+  - Live demo showcasing the verification process
+  - Real-time visualization of the three-stage pipeline
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.8+
+- Node.js 18+
+- Docker (for containerization workflows)
+- OpenAI API key
+
+### Backend Setup
+
+```bash
+cd agx
+pip install -r requirements.txt
+export OPENAI_API_KEY=your_key_here
+python main.py "your DevOps task here"
+```
+
+### Frontend Setup
+
+```bash
+cd agx_frontend
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000` to see the live interface.
+
+### API Endpoint
+
+```bash
+curl -X POST http://localhost:3000/api \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Deploy a Node.js app to Fly.io"}'
+```
+
+## The Roadmap
+
+### Current: Showcase Engine
+- ✅ Docker + Fly.io workflows
+- ✅ Static verification system
+- ✅ Web-based demonstration
+
+### Coming Soon: AGX CLI
+The next evolution brings the verification engine to your local machine:
+
+- **🔧 Context-Aware**: Reads your project structure and configs
+- **📁 File System Access**: Creates, modifies, and manages project files
+- **☁️ Cloud Integrations**: AWS, Kubernetes, GitHub Actions, and more
+- **🔄 State Management**: Tracks deployments and infrastructure changes
+- **🚀 Professional Workflows**: Multi-environment deployments, rollbacks, monitoring
+
+## Technical Details
+
+### Supported Models
+- GPT-4.1-mini (recommended)
+- o3-mini (for advanced reasoning)
+- GPT-4o (for complex workflows)
+
+### Safety Features
+- **Static Analysis**: Every function call is validated before execution
+- **Sandboxed Registry**: Only pre-approved functions are available
+- **Type Checking**: Arguments are validated against function signatures
+- **Error Handling**: Graceful failure with detailed error messages
+
+### Function Registry
+The heart of AGX's safety is the curated function registry. Each function is:
+- Thoroughly tested
+- Documentation-complete
+- Type-safe
+- Side-effect controlled
+
+## Contributing
+
+This is a solo-developed project and is not currently open for contributions. The priority areas for development are:
+
+1.  **New Cloud Providers**: AWS, GCP, Azure integrations
+2.  **CI/CD Platforms**: GitHub Actions, GitLab CI, Jenkins
+3.  **Monitoring Tools**: DataDog, New Relic, Prometheus
+4.  **Security Tools**: Vulnerability scanning, secret management
+
+## License
+
+This project is proprietary and all rights are reserved.
+
+## Contact
+
+For personal notes or feature ideas, please use the repository's issue tracker.
+
+---
+
+**AGX**: Because DevOps automation should be verifiable, not just believable.

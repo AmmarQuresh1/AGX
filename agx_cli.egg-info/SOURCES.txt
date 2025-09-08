@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+agx_cli/agx.py
+agx_cli.egg-info/PKG-INFO
+agx_cli.egg-info/SOURCES.txt
+agx_cli.egg-info/dependency_links.txt
+agx_cli.egg-info/entry_points.txt
+agx_cli.egg-info/requires.txt
+agx_cli.egg-info/top_level.txt
