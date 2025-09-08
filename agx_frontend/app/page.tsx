@@ -5,12 +5,69 @@ import { FiCopy } from "react-icons/fi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
+function CLICard() {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const res = await fetch("https://formspree.io/f/mwpnagok", {
+      method: "POST",
+      headers: { "Accept": "application/json" },
+      body: data
+    });
+    if (res.ok) {
+      form.reset();
+      alert("Thanks! I’ll send you an email.");
+    } else {
+      alert("Sorry—couldn’t submit. Please email cli@agx.run.");
+    }
+  }
+
+  return (
+    <div className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+      <h3 className="text-sm font-semibold">AGX CLI (private alpha)</h3>
+      <ul className="mt-2 list-disc pl-5 text-sm leading-6 text-neutral-800">
+        <li>AWS-first: generates Terraform from validated plans</li>
+        <li>Local-first: no freeform shell; registry-only</li>
+        <li>Deterministic by design: static checks before codegen</li>
+      </ul>
+
+      <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
+        {/* honeypot to reduce spam */}
+        <input type="text" name="_gotcha" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
+
+        {/* required email—this is the only field */}
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="you@company.com"
+          className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm"
+        />
+
+        {/* optional hidden fields for context/segmentation */}
+        <input type="hidden" name="source" value="agx.run_cli_card" />
+        <input type="hidden" name="product" value="AGX CLI (private alpha)" />
+
+        <button type="submit" className="rounded-md border border-neutral-300 px-3 py-2 text-sm bg-neutral-100">
+          Join early list
+        </button>
+      </form>
+
+      <p className="mt-2 text-xs text-neutral-600">
+        Prefer email? <a className="underline" href="mailto:cli@agx.run?subject=AGX%20CLI%20(private%20alpha)%20%E2%80%94%20early%20access&body=Hi%20Ammar,%0A%0AMy%20AWS%20stack%3A%0AInfra%20to%20automate%3A%0ATerraform%20workflow%3A%0A%0AThanks!">cli@agx.run</a>
+      </p>
+    </div>
+  );
+}
+
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [downloading, setDownloading] = useState(false);
   const [result, setResult] = useState("")
   const [copied, setCopied] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
+  const MIN_SPINNER_MS = 6000; // Wait ~6s total before showing results
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Stops reload
@@ -46,8 +103,8 @@ export default function Home() {
     setTimeout(() => setProcessingStep(2), 2000);  // 2 seconds for step 1
     setTimeout(() => setProcessingStep(3), 4000);  // 4 seconds total (2 more for step 2)
     
-    // Wait for at least 9 seconds total before showing results
-    setTimeout(async () => {
+  // Wait for at least MIN_SPINNER_MS total before showing results
+  setTimeout(async () => {
       // Ensure API call is complete
       await apiCall;
       
@@ -70,7 +127,7 @@ export default function Home() {
       
       setProcessingStep(0); // Reset processing step
       setDownloading(false);
-    }, 6000);
+  }, MIN_SPINNER_MS);
   };
 
   const handleDownload = () => {
@@ -208,7 +265,7 @@ export default function Home() {
               <input
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder={'e.g., "Create a Dockerfile for a FastAPI app on port 8000 and deploy to Fly.io"'}
+                placeholder={'e.g., "Create an S3 bucket named agx-demo-123 with all public access blocked and save to main.tf"'}
                 className="prompt-input"
                 style={{
                   flex: 1,
@@ -342,7 +399,7 @@ export default function Home() {
           </h2>
           
           {/* Responsive two-column container */}
-          <div
+      <div
             className="roadmap-container"
             style={{
               maxWidth: 1000,
@@ -351,6 +408,7 @@ export default function Home() {
               marginTop: "2rem",
               paddingTop: "2rem",
               gap: "2rem",
+        display: "flex",
             }}
           >
             {/* Left Column: About the Showcase Engine */}
@@ -398,14 +456,10 @@ export default function Home() {
               
               <h4 style={{ marginTop: "1.5rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Available tools (demo subset):</h4>
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", color: "#4b5563", lineHeight: 1.6 }}>
-                <li style={{ marginBottom: "0.25rem" }}><code>check_docker_status</code>: Checks if Docker is running.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>build_docker_image</code>: Builds a Docker image.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>create_dockerfile</code>: Generates a Dockerfile.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>deploy_to_fly</code>: Deploys an application to Fly.io.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>scale_fly_app</code>: Scales a Fly.io application.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>get_app_status</code>: Gets the status of a Fly.io app.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>monitor_deployment</code>: Monitors a Fly.io deployment.</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>cleanup_resources</code>: Cleans up Fly.io and Docker resources.</li>
+                <li style={{ marginBottom: "0.25rem" }}><code>set_bucket_name</code> — set name for reuse</li>
+                <li style={{ marginBottom: "0.25rem" }}><code>create_aws_s3_bucket</code> — emit bucket HCL</li>
+                <li style={{ marginBottom: "0.25rem" }}><code>aws_s3_bucket_public_access_block</code> — block public access</li>
+                <li style={{ marginBottom: "0.25rem" }}><code>save_hcl_to_file</code> — write main.tf</li>
               </ul>
               <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: "1rem" }}>
                 Try chaining them together in your prompt! Here's a sample:{" "}
@@ -417,12 +471,14 @@ export default function Home() {
                     fontSize: "0.9em",
                   }}
                 >
-                  Create a Dockerfile for a Python FastAPI application on port 8000, build the image, and then deploy it to Fly.io.
+                  Create an S3 bucket named agx-demo-123 with all public access blocked and save to main.tf.
                 </code>
               </p>
             </div>
-
             {/* Right Column: The Future */}
+            <div style={{ flex: 1, paddingLeft: 20 }}>
+              <CLICard />
+            </div>
           </div>
         </div>
         {/*footer*/}

@@ -1,5 +1,6 @@
 import inspect
-from .registries.devops_test import registry # Change registry here
+from .registries.devops_test import registry
+from .utils import _tf_label
 
 """
 Input list example:
