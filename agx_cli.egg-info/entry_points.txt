@@ -1,0 +1,2 @@
+[console_scripts]
+agx = agx_cli.agx:app

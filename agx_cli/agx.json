@@ -1,0 +1,16 @@
+[
+  {
+    "folder": "./agx_backend",
+    "name": "agx_backend",
+    "type": "FastAPI",
+    "deploy_target": "Fly.io",
+    "deploy_name": "agx_backend"
+  },
+  {
+    "folder": "./agx_frontend",
+    "name": "agx_frontend",
+    "type": "Next.js",
+    "deploy_target": "Vercel",
+    "deploy_name": "agx_frontend"
+  }
+]
