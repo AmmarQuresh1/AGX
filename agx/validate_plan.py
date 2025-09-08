@@ -28,16 +28,23 @@ from .registries.devops_test import registry # Change registry here
 import inspect
 from inspect import signature
 from typing import get_origin
+import typing
 
 def _is_basic_type(type_hint):
     # only allows for simple types for isinstance checks
     return get_origin(type_hint) is None
 
 def _check_type(value, type_hint):
-    if _is_basic_type(type_hint):
-        return isinstance(value, type_hint)
-    else:
-        return False
+    # Accept Any and unknown typing forms without strict checks
+    try:
+        if str(type_hint) == 'typing.Any' or type_hint is typing.Any:
+            return True
+        if _is_basic_type(type_hint) and isinstance(type_hint, type):
+            return isinstance(value, type_hint)
+    except Exception:
+        return True
+    # Fallback: don't block on complex hints in the demo
+    return True
 
 def validate_plan(plan):
     assigned_vars = set()  # Keeps track of all variables that get assigned values

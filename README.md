@@ -1,152 +1,75 @@
-# AGX: The Verifiable AI Workflow Engine for DevOps
+# AGX: From Prompt → JSON Plan → Validated → Terraform HCL
 
-AGX is a verifiable AI engine that translates natural language into reliable DevOps workflows by statically analyzing execution plans. Zero hallucinations, guaranteed.
+AGX is a verifiable AI workflow engine. You type a natural‑language instruction, AGX generates a strict JSON plan using a registry of approved functions, validates the plan, and compiles the result to Terraform HCL you can inspect locally.
 
-## What Makes AGX Different
+Live demo: https://agx.run
 
-Unlike traditional AI wrappers, AGX uses a **three-stage verification process**:
+## What this repo demonstrates
 
-1. **🧠 Generate JSON Plan**: AI creates a structured execution plan
-2. **🛡️ Static Verification**: Plan is validated against a pre-vetted function registry
-3. **⚙️ Compile to Python**: Verified plan becomes production-ready code
+- Prompt → JSON plan (AWS‑first demo)
+- Plan validator: ensures only registry functions, correct keys, and valid variable references
+- Compiler/runtime: turns the plan into Terraform HCL and writes `main.tf`
 
-This approach eliminates hallucinations and ensures every generated workflow is safe and executable.
+## Quickstart
 
-## Live Demo
-
-Try AGX in action: [https://agx.run](https://agx.run)
-
-## Current Capabilities
-
-AGX currently supports "Zero to Deploy" workflows with these validated functions:
-
-- **Docker Operations**: `check_docker_status`, `build_docker_image`, `create_dockerfile`
-- **Fly.io Deployment**: `deploy_to_fly`, `scale_fly_app`, `get_app_status`
-- **Monitoring**: `monitor_deployment`, `cleanup_resources`
-- **Utilities**: `log_message`
-
-### Example Usage
-
-```
-Create a Dockerfile for a Python FastAPI application on port 8000, build the image, and deploy it to Fly.io
-```
-
-AGX will generate a verified Python script that:
-1. Creates an optimized Dockerfile
-2. Builds the Docker image
-3. Deploys to Fly.io
-4. Monitors the deployment
-
-## Architecture
-
-```
-User Prompt → JSON Plan → Static Verification → Python Script
-     ↓             ↓              ↓               ↓
-   Natural      Structured    Safety Check    Executable
-  Language       Plan         Complete         Code
-```
-
-### Core Components
-
-- **`agx/`**: Core verification engine
-  - `llm_openai.py`: AI plan generation
-  - `planner.py`: Static verification and compilation
-  - `registry.py`: Pre-vetted function library
-  - `prompt_templates/`: Structured prompts for different models
-
-- **`agx_frontend/`**: Next.js web interface
-  - Live demo showcasing the verification process
-  - Real-time visualization of the three-stage pipeline
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- Node.js 18+
-- Docker (for containerization workflows)
-- OpenAI API key
-
-### Backend Setup
+Run the AWS S3 example end‑to‑end locally:
 
 ```bash
-cd agx
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-export OPENAI_API_KEY=your_key_here
-python main.py "your DevOps task here"
+python agx/registries/devops_test.py
 ```
 
-### Frontend Setup
+This creates a `main.tf` in the repository root containing an `aws_s3_bucket` and an accompanying `aws_s3_bucket_public_access_block`.
 
-```bash
-cd agx_frontend
-npm install
-npm run dev
-```
+## Example prompt and expected plan
 
-Visit `http://localhost:3000` to see the live interface.
+Prompt:
 
-### API Endpoint
+Create an S3 bucket agx-demo-123 with all public access blocked and save to main.tf.
 
-```bash
-curl -X POST http://localhost:3000/api \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "Deploy a Node.js app to Fly.io"}'
-```
+Expected planner output (JSON array only):
 
-## The Roadmap
+[
+  {
+    "function": "set_bucket_name",
+    "args": { "name": "agx-demo-123" },
+    "assign": "bucket_name"
+  },
+  {
+    "function": "create_aws_s3_bucket",
+    "args": { "bucket_name": "{bucket_name}" },
+    "assign": "bucket_hcl"
+  },
+  {
+    "function": "aws_s3_bucket_public_access_block",
+    "args": { "bucket_name": "{bucket_name}", "block_all_public": true },
+    "assign": "block_hcl"
+  },
+  {
+    "function": "save_hcl_to_file",
+    "args": { "hcl_content": "{bucket_hcl}\n{block_hcl}", "filename": "main.tf" }
+  }
+]
 
-### Current: Showcase Engine
-- ✅ Docker + Fly.io workflows
-- ✅ Static verification system
-- ✅ Web-based demonstration
+## Safety
 
-### Coming Soon: AGX CLI
-The next evolution brings the verification engine to your local machine:
+- Registry‑only execution; no freeform shell
+- Strict JSON: only `function`, `args`, and optional `assign`
+- Variable references must be previously assigned (e.g., `"{bucket_name}"`)
+- HCL is written to a local file for inspection (`main.tf`)
 
-- **🔧 Context-Aware**: Reads your project structure and configs
-- **📁 File System Access**: Creates, modifies, and manages project files
-- **☁️ Cloud Integrations**: AWS, Kubernetes, GitHub Actions, and more
-- **🔄 State Management**: Tracks deployments and infrastructure changes
-- **🚀 Professional Workflows**: Multi-environment deployments, rollbacks, monitoring
+## Roadmap
 
-## Technical Details
+- Today: S3 bucket + public access block + save to file
+- Next: VPC, IAM, RDS primitives
+- Then: CI/CD flows (GitHub Actions) and Kubernetes
 
-### Supported Models
-- GPT-4.1-mini (recommended)
-- o3-mini (for advanced reasoning)
-- GPT-4o (for complex workflows)
+## Frontend
 
-### Safety Features
-- **Static Analysis**: Every function call is validated before execution
-- **Sandboxed Registry**: Only pre-approved functions are available
-- **Type Checking**: Arguments are validated against function signatures
-- **Error Handling**: Graceful failure with detailed error messages
-
-### Function Registry
-The heart of AGX's safety is the curated function registry. Each function is:
-- Thoroughly tested
-- Documentation-complete
-- Type-safe
-- Side-effect controlled
-
-## Contributing
-
-This is a solo-developed project and is not currently open for contributions. The priority areas for development are:
-
-1.  **New Cloud Providers**: AWS, GCP, Azure integrations
-2.  **CI/CD Platforms**: GitHub Actions, GitLab CI, Jenkins
-3.  **Monitoring Tools**: DataDog, New Relic, Prometheus
-4.  **Security Tools**: Vulnerability scanning, secret management
-
-## License
-
-This project is proprietary and all rights are reserved.
-
-## Contact
-
-For personal notes or feature ideas, please use the repository's issue tracker.
+The Next.js app in `agx_frontend/` shows the 3‑step pipeline visually. The copy and examples are AWS‑first in this branch.
 
 ---
 
-**AGX**: Because DevOps automation should be verifiable, not just believable.
+AGX is built for verifiable DevOps automation. See the live demo at https://agx.run
