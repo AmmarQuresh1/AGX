@@ -482,9 +482,13 @@ export default function Home() {
           </div>
         </div>
         {/*footer*/}
-        <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", marginTop: 30, fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX</a>
-        <p style={{ marginTop: 8, color: "#444", fontSize: "1.1rem", paddingBottom: "4rem", }}>
-          You can generate up to five plans per day.
+        <p style={{ marginTop: 30, color: "#444", fontSize: "1.1rem", textAlign:"center"}}>
+          You can generate up to five plans per day
+        </p>
+        <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
+        <p style={{ marginTop: 16, color: "#6b7280", fontSize: "0.85rem", paddingTop:"2rem", paddingBottom: "4rem", textAlign:"center", fontWeight:400}}>
+          AGX™ is a product of AQ DIGITAL LIMITED <br/>
+          In the UK, AGX is offered under the mark AQ DIGITAL AGX™
         </p>
         <SpeedInsights />
         <Analytics />
