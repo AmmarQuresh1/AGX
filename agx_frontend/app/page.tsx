@@ -230,7 +230,7 @@ export default function Home() {
 
         {/* Tool Section */}
         <div id="tool-section">
-          <h2 style={{ marginBottom: 24 }}>
+          <h2 className="nowrap" style={{ marginBottom: 24 }}>
             Describe what you want to automate...
           </h2>
 

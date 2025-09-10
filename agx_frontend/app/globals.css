@@ -169,6 +169,8 @@ code {
   background: var(--accent);
 }
 
+.nowrap { white-space: nowrap; }
+
 .footer-blurb {
   margin-top: 40px;
   margin-bottom: 6px;
