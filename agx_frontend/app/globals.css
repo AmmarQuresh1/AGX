@@ -70,7 +70,7 @@ code {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 64px;
+  margin-bottom: 32px;
 }
 .hero-title {
   font-size: 3rem;
