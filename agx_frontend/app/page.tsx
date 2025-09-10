@@ -6,56 +6,100 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
 function CLICard() {
+  const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Set to true if you’re sending marketing emails to UK users (UK GDPR/PECR opt‑in).
+  const REQUIRE_UK_OPT_IN = true;
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setSubmitting(true);
+    setNotice(null);
+
     const form = e.currentTarget;
     const data = new FormData(form);
-    const res = await fetch("https://formspree.io/f/mwpnagok", {
-      method: "POST",
-      headers: { "Accept": "application/json" },
-      body: data
-    });
-    if (res.ok) {
-      form.reset();
-      alert("Thanks! I’ll send you an email.");
-    } else {
-      alert("Sorry—couldn’t submit. Please email cli@agx.run.");
+
+    try {
+      const res = await fetch("https://formspree.io/f/mwpnagok", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+
+      if (res.ok) {
+        form.reset();
+        setNotice({ type: "success", text: "Thanks! I’ll send you an email." });
+      } else {
+        setNotice({ type: "error", text: "Sorry, couldn’t submit. Please email cli@agx.run." });
+      }
+    } catch {
+      setNotice({ type: "error", text: "Network error. Please try again or email cli@agx.run." });
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
-    <div className="mt-8 rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+    <div className="mt-8 rounded-2xl card">
       <h3 className="text-sm font-semibold">AGX CLI (private alpha)</h3>
-      <ul className="mt-2 list-disc pl-5 text-sm leading-6 text-neutral-800">
+      <ul className="mt-2 list-disc pl-5 text-sm leading-6 text-subtle">
         <li>AWS-first: generates Terraform from validated plans</li>
         <li>Local-first: no freeform shell; registry-only</li>
         <li>Deterministic by design: static checks before codegen</li>
       </ul>
 
-      <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
+      <form onSubmit={handleSubmit} className="mt-3" style={{ display: "grid", gap: 8 }}>
         {/* honeypot to reduce spam */}
         <input type="text" name="_gotcha" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
 
-        {/* required email—this is the only field */}
-        <input
-          type="email"
-          name="email"
-          required
-          placeholder="you@company.com"
-          className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm"
-        />
+        {/* required email—single field for simplicity */}
+        <label className="text-sm text-subtle">
+          Work email
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="you@company.com"
+            className="mt-1 w-full input"
+          />
+        </label>
 
-        {/* optional hidden fields for context/segmentation */}
+        {/* optional UK marketing consent */}
+        {REQUIRE_UK_OPT_IN && (
+          <label className="flex items-start gap-2 text-sm text-subtle">
+            <input type="checkbox" name="consent" required className="mt-1" />
+            <span>I agree to receive emails about the AGX CLI private alpha.</span>
+          </label>
+        )}
+
+        {/* context/segmentation */}
         <input type="hidden" name="source" value="agx.run_cli_card" />
         <input type="hidden" name="product" value="AGX CLI (private alpha)" />
 
-        <button type="submit" className="rounded-md border border-neutral-300 px-3 py-2 text-sm bg-neutral-100">
-          Join early list
+    <button type="submit" disabled={submitting} className="rounded-md button" style={{ width: "fit-content", background: submitting ? "var(--accent)" : "var(--surface)" }}>
+          {submitting ? "Submitting…" : "Join early list"}
         </button>
+
+        {notice && (
+          <p
+            aria-live="polite"
+            className="text-sm"
+      style={{ color: notice.type === "success" ? "#0a7d3b" : "#b00020" }}
+          >
+            {notice.text}
+          </p>
+        )}
       </form>
 
-      <p className="mt-2 text-xs text-neutral-600">
-        Prefer email? <a className="underline" href="mailto:cli@agx.run?subject=AGX%20CLI%20(private%20alpha)%20%E2%80%94%20early%20access&body=Hi%20Ammar,%0A%0AMy%20AWS%20stack%3A%0AInfra%20to%20automate%3A%0ATerraform%20workflow%3A%0A%0AThanks!">cli@agx.run</a>
+    <p className="mt-2 text-xs text-muted">
+        Prefer email?{" "}
+        <a
+          className="underline"
+          href="mailto:cli@agx.run?subject=AGX%20CLI%20(private%20alpha)%20%E2%80%94%20early%20access&body=Hi%20Ammar,%0A%0AMy%20AWS%20stack%3A%0AInfra%20to%20automate%3A%0ATerraform%20workflow%3A%0A%0AThanks!"
+        >
+          cli@agx.run
+        </a>
       </p>
     </div>
   );
@@ -148,80 +192,27 @@ export default function Home() {
   };
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        paddingTop: "4rem",
-        background: "var(--background)",
-        color: "var(--foreground)",
-      }} 
-    >
-      <div
-        style={{
-          width: 700,
-          maxWidth: "90vw",
-          margin: "0 auto",
-          textAlign: "left", 
-          alignItems: "center"
-        }}
-      >
+    <main className="main">
+      <div className="container">
         {/* The logo is now in a div, not an H1. */}
         <div style={{ margin: 0, fontWeight: 'normal', fontSize: '1rem' }}>
           <img
             src="/resources/agx_white.png"
-            // Bonus: Improved alt text for SEO and accessibility
             alt="AGX: The Verifiable AI Workflow Engine for DevOps"
-            style={{
-               height: 40,
-               display: 'block', // Good practice for images in blocks
-               marginBottom: 32
-            }}
+            className="logo-img"
           />
         </div>
 
         {/* Hero Section */}
-        <div style={{ 
-          textAlign: "center", 
-          minHeight: "60vh", 
-          display: "flex", 
-          flexDirection: "column", 
-          justifyContent: "center", 
-          alignItems: "center",
-          marginBottom: 64 
-        }}>
+        <div className="hero">
           {/* This is now the single, correct H1 for the page */}
-          <h1 style={{ 
-            fontSize: "3rem", 
-            fontWeight: 700, 
-            marginBottom: 32, 
-            lineHeight: 1.1,
-            margin: "0 0 32px 0"
-          }}>
+          <h1 className="hero-title">
             From Prompt to Verified DevOps Automation
           </h1>
-          <p style={{ 
-            fontSize: "1.3rem", 
-            color: "#4b5563", 
-            marginBottom: 48, 
-            lineHeight: 1.5,
-            maxWidth: 600,
-            margin: "0 auto 48px auto"
-          }}>
+          <p className="hero-lead">
             AGX generates structured JSON plans, validates them against a pre‑vetted function library, then compiles them into executable code.
           </p>
-          <p style={{ 
-            fontSize: "1.1rem", 
-            color: "#6b7280", 
-            marginTop: -24,
-            marginBottom: 48, 
-            lineHeight: 1.5,
-            maxWidth: 600,
-            margin: "0 auto 48px auto"
-          }}>
+          <p className="hero-sub">
             Live demo: natural‑language prompt → JSON plan → validator check → compiled script.
           </p>
           <button
@@ -231,17 +222,7 @@ export default function Home() {
                 toolSection.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            style={{
-              padding: "16px 32px",
-              fontSize: "1.3rem",
-              borderRadius: 6,
-              border: "1px solid #b3b2ae",
-              background: "#E0DBD1",
-              color: "black",
-              cursor: "pointer",
-              fontWeight: 600,
-              marginBottom: 32
-            }}
+            className="cta-btn"
           >
             Try the Live Showcase
           </button>
@@ -255,43 +236,19 @@ export default function Home() {
 
           {/* Responsive form container */}
           <div className="prompt-form-container" style={{ width: "100%", maxWidth: "90%", margin: "0 auto" }}>
-            <form onSubmit={handleSubmit} className="prompt-form" style={{ 
-              display: "flex", 
-              marginTop: 8,
-              justifyContent: "center",
-              width: "100%",
-              gap: 12,
-            }}>
+            <form onSubmit={handleSubmit} className="prompt-form" style={{ marginTop: 8, justifyContent: "center" }}>
               <input
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder={'e.g., "Create an S3 bucket named agx-demo-123 with all public access blocked and save to main.tf"'}
-                className="prompt-input"
-                style={{
-                  flex: 1,
-                  padding: 12,
-                  fontSize: "1.2rem",
-                  borderRadius: 6,
-                  background: "#fffefe",
-                  border: "1px solid #b3b2ae",
-                  minWidth: 0, // Prevents overflow in flex
-                }}
+                className="prompt-input input"
+                style={{ padding: 12, fontSize: "1.2rem" }}
               />
               <button
                 type="submit"
                 disabled={downloading || !prompt}
-                className="prompt-btn"
-                style={{
-                  padding: "12px 24px",
-                  fontSize: "1.2rem",
-                  borderRadius: 6,
-                  border: "1px solid #b3b2ae",
-                  background: downloading ? "#E0DBD1" : "#faf8f4",
-                  color: "#000000",
-                  cursor: downloading || !prompt ? "not-allowed" : "pointer",
-                  fontWeight: "normal",
-                  whiteSpace: "nowrap",
-                }}
+                className="prompt-btn button"
+                style={{ padding: "12px 24px", fontSize: "1.2rem", whiteSpace: "nowrap", background: downloading ? "var(--accent)" : "var(--surface)" }}
               >
                 {downloading ? "Generating..." : "Generate Script"}
               </button>
@@ -307,21 +264,7 @@ export default function Home() {
               role="status"
               aria-live="polite"
               aria-busy={downloading ? "true" : "false"}
-              style={{
-                background: "#f9f8f5",
-                padding: 16,
-                borderRadius: 6,
-                width: "100%",
-                minHeight: 120,
-                maxHeight: 400,
-                paddingBottom: 16,
-                overflowX: "auto",
-                fontSize: "1rem",
-                color: "#222",
-                border: "1px solid #b3b2ae",
-                textAlign: "left",
-                boxSizing: "border-box",
-              }}
+              className="pre-box"
             >
               {downloading && processingStep > 0 ? (
                 processingStep === 1 ? "[1/3] Generating JSON plan…" :
@@ -340,20 +283,8 @@ export default function Home() {
                   setTimeout(() => setCopied(false), 800);
                 }
               }}
-              style={{
-                position: "absolute",
-                top: 12,
-                right: 12,
-                padding: "6px 14px",
-                fontSize: "1rem",
-                borderRadius: 4,
-                border: "1px solid #b3b2ae",
-                background: copied ? "#E0DBD1" : "#f9f8f5",
-                color: "#222",
-                cursor: "pointer",
-                opacity: result ? 1 : 0.5,
-                pointerEvents: result ? "auto" : "none",
-              }}
+              className={`copy-btn ${copied ? 'copied' : ''}`}
+              style={{ opacity: result ? 1 : 0.5, pointerEvents: result ? 'auto' : 'none' }}
               disabled={!result}
             >
               <FiCopy size={20} />
@@ -364,17 +295,8 @@ export default function Home() {
             title={!result ? "Generate a script first" : "Download the generated script"}
             onClick={handleDownload}
             disabled={!result}
-            style={{
-              padding: "12px 24px",
-              fontSize: "1.2rem",
-              borderRadius: 6,
-              border: "1px solid #b3b2ae",
-              background: !result ? "#faf8f5" : "#E0DBD1",
-              color: !result ? "#999" : "#000000",
-              cursor: !result ? "not-allowed" : "pointer",
-              fontWeight: "normal",
-              width: "100%",
-            }}
+            className="button"
+            style={{ padding: "12px 24px", fontSize: "1.2rem", width: "100%", background: !result ? "var(--surface)" : "var(--accent)", color: !result ? "#999" : "#000" }}
           >
             Download Script
           </button>
@@ -382,14 +304,7 @@ export default function Home() {
         </div>
 
         {/* New parent container for centering and constraining width */}
-        <div
-          style={{
-            maxWidth: "1024px",
-            margin: "0 auto",
-            padding: "0 1rem",
-            marginTop: 16
-          }}
-        >
+  <div style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 1rem", marginTop: 16 }}>
           <h2 style={{
             textAlign: "center",
             marginBottom: 32,
@@ -414,19 +329,17 @@ export default function Home() {
             {/* Left Column: About the Showcase Engine */}
             <div style={{ flex: 1.5, paddingLeft: 10 }}>
               <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>About the Showcase Engine</h3>
-              <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
+              <p className="text-subtle" style={{ lineHeight: 1.6 }}>
                 AGX is a verifiable AI engine that translates your commands into reliable, executable workflows.
               </p>
-              <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
+              <p className="text-subtle" style={{ lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
                 This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan.</strong>
               </p>
               <br />
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
                 <li style={{ marginBottom: "1rem" }}>
                   <strong>Reliable by design. Hallucination‑resistant.</strong>
-                  <p
-                    style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
-                  >
+          <p className="text-subtle" style={{ margin: "0.25em 0", lineHeight: 1.6 }}>
                     Our <strong>verification engine</strong> validates every execution plan against a
                     registry of approved functions before it runs, preventing unapproved actions and
                     reducing the unpredictable behaviour of typical AI agents.
@@ -434,9 +347,7 @@ export default function Home() {
                 </li>
                 <li style={{ marginBottom: "1rem" }}>
                   <strong>Transparent & auditable</strong>
-                  <p
-                    style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
-                  >
+          <p className="text-subtle" style={{ margin: "0.25em 0", lineHeight: 1.6 }}>
                     AGX generates a <strong>clean Python script</strong> for every task. You see
                     exactly what will happen, providing a clear and auditable
                     workflow every time.
@@ -444,9 +355,7 @@ export default function Home() {
                 </li>
                 <li>
                   <strong>Built for real workflows</strong>
-                  <p
-                    style={{ margin: "0.25em 0", color: "#4b5563", lineHeight: 1.6 }}
-                  >
+          <p className="text-subtle" style={{ margin: "0.25em 0", lineHeight: 1.6 }}>
                     With built-in <strong>dependency resolution</strong>, the engine can orchestrate
                     multi-step processes like building an image, deploying it, and
                     then monitoring the result.
@@ -454,14 +363,14 @@ export default function Home() {
                 </li>
               </ul>
               
-              <h4 style={{ marginTop: "1.5rem", marginBottom: "0.5rem", fontSize: "1.1rem", color: "#374151" }}>Available tools (demo subset):</h4>
-              <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", color: "#4b5563", lineHeight: 1.6 }}>
+        <h4 style={{ marginTop: "1.5rem", marginBottom: "0.5rem", fontSize: "1.1rem" }} className="text-subtle">Available tools (demo subset):</h4>
+        <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", lineHeight: 1.6 }} className="text-subtle">
                 <li style={{ marginBottom: "0.25rem" }}><code>set_bucket_name</code> — set name for reuse</li>
                 <li style={{ marginBottom: "0.25rem" }}><code>create_aws_s3_bucket</code> — emit bucket HCL</li>
                 <li style={{ marginBottom: "0.25rem" }}><code>aws_s3_bucket_public_access_block</code> — block public access</li>
                 <li style={{ marginBottom: "0.25rem" }}><code>save_hcl_to_file</code> — write main.tf</li>
               </ul>
-              <p style={{ color: "#4b5563", lineHeight: 1.6, marginTop: "1rem" }}>
+        <p className="text-subtle" style={{ lineHeight: 1.6, marginTop: "1rem" }}>
                 Try chaining them together in your prompt! Here's a sample:{" "}
                 <code
                   style={{
@@ -482,11 +391,11 @@ export default function Home() {
           </div>
         </div>
         {/*footer*/}
-        <p style={{ marginTop: 40, marginBottom: 6, color: "#444", fontSize: "1.1rem", textAlign:"center"}}>
+    <p className="footer-blurb">
           You can generate up to five plans per day
         </p>
-        <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
-        <p style={{ marginTop: 16, color: "#6b7280", fontSize: "0.85rem", paddingTop:"2rem", paddingBottom: "4rem", textAlign:"center", fontWeight:400}}>
+    <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
+    <p className="footer-line">
           AGX™ is a product of AQ DIGITAL LIMITED <br/>
           In the UK, AGX is offered under the mark AQ DIGITAL AGX™
         </p>
