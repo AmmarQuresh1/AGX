@@ -482,7 +482,7 @@ export default function Home() {
           </div>
         </div>
         {/*footer*/}
-        <p style={{ marginTop: 30, color: "#444", fontSize: "1.1rem", textAlign:"center"}}>
+        <p style={{ marginTop: 40, marginBottom: 6, color: "#444", fontSize: "1.1rem", textAlign:"center"}}>
           You can generate up to five plans per day
         </p>
         <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
