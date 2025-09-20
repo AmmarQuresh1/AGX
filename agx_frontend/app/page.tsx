@@ -230,7 +230,7 @@ export default function Home() {
 
         {/* Tool Section */}
         <div id="tool-section">
-          <h2 className="nowrap" style={{ marginBottom: 24 }}>
+          <h2 className="sm:nowrap" style={{ marginBottom: 24, fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}>
             Describe what you want to automate...
           </h2>
 
