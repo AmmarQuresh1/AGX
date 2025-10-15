@@ -111,7 +111,7 @@ export default function Home() {
   const [result, setResult] = useState("")
   const [copied, setCopied] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
-  const MIN_SPINNER_MS = 6000; // Wait ~6s total before showing results
+  const MIN_SPINNER_MS = 3000; // Wait ~6s total before showing results
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Stops reload
@@ -144,8 +144,8 @@ export default function Home() {
     });
     
     // Show processing steps with guaranteed delays
-    setTimeout(() => setProcessingStep(2), 2000);  // 2 seconds for step 1
-    setTimeout(() => setProcessingStep(3), 4000);  // 4 seconds total (2 more for step 2)
+    setTimeout(() => setProcessingStep(2), 1000);  // 2 seconds for step 1
+    setTimeout(() => setProcessingStep(3), 2000);  // 4 seconds total (2 more for step 2)
     
   // Wait for at least MIN_SPINNER_MS total before showing results
   setTimeout(async () => {
@@ -230,7 +230,7 @@ export default function Home() {
 
         {/* Tool Section */}
         <div id="tool-section">
-          <h2 className="sm:nowrap" style={{ marginBottom: 24, fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}>
+          <h2 className="whitespace-normal md:whitespace-nowrap" style={{ marginBottom: 24 }}>
             Describe what you want to automate...
           </h2>
 
@@ -394,7 +394,9 @@ export default function Home() {
     <p className="footer-blurb">
           You can generate up to five plans per day
         </p>
-    <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
+    <div style={{ textAlign: "center" }}>
+      <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
+    </div>
     <p className="footer-line">
           AGX™ is a product of AQ DIGITAL LIMITED <br/>
           In the UK, AGX is offered under the mark AQ DIGITAL AGX™
