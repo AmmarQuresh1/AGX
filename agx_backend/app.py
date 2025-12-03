@@ -35,7 +35,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.post("/", response_class=PlainTextResponse)
 @limiter.limit("5/day") # Set limits here
-async def generate_script(script: Script, request: Request):
+def generate_script(script: Script, request: Request):
     code = agx_main(script.prompt)
     if not code:
         raise HTTPException(status_code=500, detail="Plan generation failed.")
