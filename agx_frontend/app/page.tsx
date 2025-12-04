@@ -44,9 +44,9 @@ function CLICard() {
     <div className="mt-8 rounded-2xl card">
       <h3 className="text-sm font-semibold">AGX CLI (private alpha)</h3>
       <ul className="mt-2 list-disc pl-5 text-sm leading-6 text-subtle">
-        <li>AWS-first: generates Terraform from validated plans</li>
-        <li>Local-first: no freeform shell; registry-only</li>
-        <li>Deterministic by design: static checks before codegen</li>
+        <li><strong>Local Execution:</strong> Your AWS credentials never leave your machine.</li>
+        <li><strong>Open Source:</strong> Fully auditable CLI code (coming Q1).</li>
+        <li><strong>Priority Access:</strong> Be the first to test the custom 12B model.</li>
       </ul>
 
       <form onSubmit={handleSubmit} className="mt-3" style={{ display: "grid", gap: 8 }}>
@@ -91,16 +91,6 @@ function CLICard() {
           </p>
         )}
       </form>
-
-    <p className="mt-2 text-xs text-muted">
-        Prefer email?{" "}
-        <a
-          className="underline"
-          href="mailto:cli@agx.run?subject=AGX%20CLI%20(private%20alpha)%20%E2%80%94%20early%20access&body=Hi%20Ammar,%0A%0AMy%20AWS%20stack%3A%0AInfra%20to%20automate%3A%0ATerraform%20workflow%3A%0A%0AThanks!"
-        >
-          cli@agx.run
-        </a>
-      </p>
     </div>
   );
 }
@@ -205,16 +195,15 @@ export default function Home() {
 
         {/* Hero Section */}
         <div className="hero">
-          {/* This is now the single, correct H1 for the page */}
           <h1 className="hero-title">
-            From Prompt to Verified DevOps Automation
+            From Prompt to Verified Terraform
           </h1>
           <p className="hero-lead">
-            AGX generates structured JSON plans, validates them against a pre‑vetted function library, then compiles them into executable code.
+            AGX applies static verification to guarantee LLM plan correctness, resulting in safe code generation that outperforms agentic approaches.
           </p>
-          <p className="hero-sub">
-            Live demo: natural‑language prompt → JSON plan → validator check → compiled script.
-          </p>
+            <p className="hero-sub">
+            This web app shows an early prototype version of the engine. An updated version with advanced features will power an open-source CLI (Q1 2026).
+            </p>
           <button
             onClick={() => {
               const toolSection = document.getElementById('tool-section');
@@ -224,14 +213,14 @@ export default function Home() {
             }}
             className="cta-btn"
           >
-            Try the Live Showcase
+            Try the Web Demo
           </button>
         </div>
 
         {/* Tool Section */}
         <div id="tool-section">
           <h2 className="whitespace-normal md:whitespace-nowrap" style={{ marginBottom: 24 }}>
-            Describe what you want to automate...
+            Describe your infrastructure... 
           </h2>
 
           {/* Responsive form container */}
@@ -240,7 +229,7 @@ export default function Home() {
               <input
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder={'e.g., "Create an S3 bucket named agx-demo-123 with all public access blocked and save to main.tf"'}
+                placeholder={"Create an S3 bucket and save to main.tf"}
                 className="prompt-input input"
                 style={{ padding: 12, fontSize: "1.2rem" }}
               />
@@ -267,9 +256,9 @@ export default function Home() {
               className="pre-box"
             >
               {downloading && processingStep > 0 ? (
-                processingStep === 1 ? "[1/3] Generating JSON plan…" :
-                processingStep === 2 ? "[2/3] Validating plan against function registry…" :
-                "[3/3] Compiling verified Python script…"
+                processingStep === 1 ? "[1/3] Generating plan…" :
+                processingStep === 2 ? "[2/3] Validating plan correctness…" :
+                "[3/3] Compiling into runnable script…"
               ) : result}
             </pre>
             <button
@@ -328,60 +317,36 @@ export default function Home() {
           >
             {/* Left Column: About the Showcase Engine */}
             <div style={{ flex: 1.5, paddingLeft: 10 }}>
-              <h3 style={{ marginTop: 0, fontSize: "1.3rem", fontWeight: 600 }}>About the Showcase Engine</h3>
-              <p className="text-subtle" style={{ lineHeight: 1.6 }}>
-                AGX is a verifiable AI engine that translates your commands into reliable, executable workflows.
-              </p>
-              <p className="text-subtle" style={{ lineHeight: 1.6, marginTop: 4, marginBottom: 4 }}>
-                This live showcase demonstrates our core principle: <strong>From Prompt to Verified Plan.</strong>
-              </p>
-              <br />
-              <ul style={{ paddingLeft: "1.25rem", listStyle: "disc" }}>
-                <li style={{ marginBottom: "1rem" }}>
-                  <strong>Reliable by design. Hallucination‑resistant.</strong>
-          <p className="text-subtle" style={{ margin: "0.25em 0", lineHeight: 1.6 }}>
-                    Our <strong>verification engine</strong> validates every execution plan against a
-                    registry of approved functions before it runs, preventing unapproved actions and
-                    reducing the unpredictable behaviour of typical AI agents.
-                  </p>
-                </li>
-                <li style={{ marginBottom: "1rem" }}>
-                  <strong>Transparent & auditable</strong>
-          <p className="text-subtle" style={{ margin: "0.25em 0", lineHeight: 1.6 }}>
-                    AGX generates a <strong>clean Python script</strong> for every task. You see
-                    exactly what will happen, providing a clear and auditable
-                    workflow every time.
-                  </p>
-                </li>
-                <li>
-                  <strong>Built for real workflows</strong>
-          <p className="text-subtle" style={{ margin: "0.25em 0", lineHeight: 1.6 }}>
-                    With built-in <strong>dependency resolution</strong>, the engine can orchestrate
-                    multi-step processes like building an image, deploying it, and
-                    then monitoring the result.
-                  </p>
-                </li>
-              </ul>
               
-        <h4 style={{ marginTop: "1.5rem", marginBottom: "0.5rem", fontSize: "1.1rem" }} className="text-subtle">Available tools (demo subset):</h4>
-        <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", lineHeight: 1.6 }} className="text-subtle">
-                <li style={{ marginBottom: "0.25rem" }}><code>set_bucket_name</code> — set name for reuse</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>create_aws_s3_bucket</code> — emit bucket HCL</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>aws_s3_bucket_public_access_block</code> — block public access</li>
-                <li style={{ marginBottom: "0.25rem" }}><code>save_hcl_to_file</code> — write main.tf</li>
+              <div style={{ marginBottom: "2rem" }}>
+                <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
+                  Live in Web App:
+                </h4>
+                <p className="text-subtle" style={{ lineHeight: 1.6, marginBottom: "1rem" }}>
+                  Guarantees <strong>correct tool usage, valid inputs, and sequential logic</strong>. Unlike standard agents that "guess and fix," 
+                  AGX verifies the plan structure before compiling a single line of code.
+                </p>
+
+                <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
+                  Open Source CLI (Q1 2026):
+                </h4>
+                <p className="text-subtle" style={{ lineHeight: 1.6 }}>
+                  Powered by a <strong>custom 12B model</strong> with more robust <strong>graph-based validation</strong>. 
+                  Extends capabilities to <strong>live state detection and drift prevention</strong>, plus <strong>security & compliance policies</strong>. 
+                  Includes native <strong>dry-run and rollback</strong> commands for safe production integration.
+                </p>
+              </div>
+              
+              <h4 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.5rem" }}>Available tools (demo subset):</h4>
+              <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", lineHeight: 1.6, fontSize: "0.95rem" }} className="text-subtle">
+                <li><code>set_bucket_name</code></li>
+                <li><code>create_aws_s3_bucket</code></li>
+                <li><code>aws_s3_bucket_public_access_block</code></li>
+                <li><code>save_hcl_to_file</code></li>
               </ul>
-        <p className="text-subtle" style={{ lineHeight: 1.6, marginTop: "1rem" }}>
-                Try chaining them together in your prompt! Here's a sample:{" "}
-                <code
-                  style={{
-                    backgroundColor: "#f3f4f6",
-                    padding: "0.2rem 0.4rem",
-                    borderRadius: "4px",
-                    fontSize: "0.9em",
-                  }}
-                >
-                  Create an S3 bucket named agx-demo-123 with all public access blocked and save to main.tf.
-                </code>
+
+              <p className="text-subtle" style={{ fontSize: "0.9rem", marginTop: "1.5rem", fontStyle: "italic", opacity: 0.8 }}>
+                Try: "Deploy a private S3 bucket named agx-demo and save to main.tf"
               </p>
             </div>
             {/* Right Column: The Future */}

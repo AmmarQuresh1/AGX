@@ -7,8 +7,8 @@
   --surface: #faf8f4;      /* cards / subtle backgrounds */
   --border: #b3b2ae;       /* soft border color */
   --accent: #E0DBD1;       /* highlight / accent bg */
-  --muted: #6b7280;        /* muted text */
-  --subtle: #4b5563;       /* secondary text */
+  --muted: #52525b;        /* muted text - darker from #6b7280 */
+  --subtle: #3f3f46;       /* secondary text - darker from #4b5563 */
   --code-surface: #f9f8f5; /* code block background */
 }
 
@@ -86,7 +86,7 @@ code {
   max-width: 600px;
 }
 .hero-sub {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: var(--muted);
   margin: 0 auto 48px auto;
   margin-top: -24px;
