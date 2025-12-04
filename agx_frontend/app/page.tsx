@@ -358,7 +358,7 @@ export default function Home() {
 
         {/* Footer Section */}
         <p className="footer-blurb" style={{ fontSize: "0.9rem", marginTop: "2rem" }}>
-          Demo limited to 5 generations/day. CLI will have higher limits.
+          Demo limited to 5 generations/day.
         </p>
         <div style={{ textAlign: "center", marginTop: "0.5rem" }}>
           <a 
