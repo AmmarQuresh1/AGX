@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AGX: The Verifiable AI Workflow Engine for DevOps",
-  description: "AGX is a verifiable AI engine that translates natural language into reliable DevOps workflows by statically analysing execution plans. Zero hallucinations, guaranteed.",
+  title: "AGX | Neurosymbolic AI for Verified Terraform",
+  description: "Generate safe, deterministic Terraform for AWS. AGX uses static verification and a compiler architecture to guarantee plan correctness, eliminating hallucinations.",
 };
 
 export default function RootLayout({
