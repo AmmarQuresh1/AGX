@@ -44,9 +44,9 @@ function CLICard() {
     <div className="mt-8 rounded-2xl card">
       <h3 className="text-sm font-semibold">AGX CLI (private alpha)</h3>
       <ul className="mt-2 list-disc pl-5 text-sm leading-6 text-subtle">
+        <li><strong>Cloud Engine:</strong> Powered by a custom 12B model.</li>
         <li><strong>Local Execution:</strong> Your AWS credentials never leave your machine.</li>
         <li><strong>Open Source:</strong> Fully auditable CLI code (coming Q1).</li>
-        <li><strong>Priority Access:</strong> Be the first to test the custom 12B model.</li>
       </ul>
 
       <form onSubmit={handleSubmit} className="mt-3" style={{ display: "grid", gap: 8 }}>
@@ -320,7 +320,7 @@ export default function Home() {
               
               <div style={{ marginBottom: "2rem" }}>
                 <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
-                  Live in Web App:
+                  Live in this Demo:
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6, marginBottom: "1rem" }}>
                   Guarantees <strong>correct tool usage, valid inputs, and sequential logic</strong>. Unlike standard agents that "guess and fix," 
@@ -355,14 +355,22 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/*footer*/}
-    <p className="footer-blurb">
-          You can generate up to five plans per day
+
+        {/* Footer Section */}
+        <p className="footer-blurb" style={{ fontSize: "0.9rem", marginTop: "2rem" }}>
+          Demo limited to 5 generations/day. CLI will have higher limits.
         </p>
-    <div style={{ textAlign: "center" }}>
-      <a href="https://www.linkedin.com/in/ammar-qureshi-083831274" style={{color: "#2779F6", fontSize: "1.1rem"}}>Built by Ammar Qureshi, founder of AGX (linkedin)</a>
-    </div>
-    <p className="footer-line">
+        <div style={{ textAlign: "center", marginTop: "0.5rem" }}>
+          <a 
+            href="https://www.linkedin.com/in/ammar-qureshi-083831274" 
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--subtle)", textDecoration: "underline" }}
+          >
+            Built by Ammar Qureshi, Founder of AGX
+          </a>
+        </div>
+        <p className="footer-line" style={{ fontSize: "0.75rem", marginTop: "1rem" }}>
           AGX™ is a product of AQ DIGITAL LIMITED <br/>
           In the UK, AGX is offered under the mark AQ DIGITAL AGX™
         </p>
