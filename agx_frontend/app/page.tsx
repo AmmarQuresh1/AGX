@@ -183,6 +183,19 @@ export default function Home() {
 
   return (
     <main className="main">
+      <div
+        style={{
+          background: "var(--accent)",
+          color: "#000",
+          padding: "10px 10px",
+          textAlign: "center",
+          fontWeight: 500,
+          fontSize: "0.95rem",
+          marginBottom: "1rem"
+        }}
+      >
+        Backend services are currently offline while we apply security updates related to the recent React/Next.js vulnerability. The demo will be fully available again by 11/12/2025.
+      </div>
       <div className="container">
         {/* The logo is now in a div, not an H1. */}
         <div style={{ margin: 0, fontWeight: 'normal', fontSize: '1rem' }}>
