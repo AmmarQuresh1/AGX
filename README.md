@@ -1,3 +1,22 @@
+# AGX Development Status - Paused for Uni Exams
+
+## Current Context
+- **Goal:** Implement "Replanning" (taking existing IR + new prompt -> new IR).
+- **Current State:** Basic compiler works. Validation works.
+- **Next Immediate Task:** Need to implement dependency resolution for the replanner.
+
+## The "Replanning" Logic (Don't Forget!)
+1.  System needs to read the existing JSON plan (IR).
+2.  LLM needs to see:
+    - The User's new prompt.
+    - The *current* state (the old IR).
+3.  The output must be a *new* complete IR that replaces the old one.
+4.  **Critical:** The compiler must overwrite `agx_resources.tf` completely.
+
+## Outstanding Questions
+- How do we handle state drift? (For now: assume IR is source of truth).
+- Where does `inspect.getsource` need to be updated if we add new registry functions?
+
 # AGX: From Prompt → JSON Plan → Validated → Terraform HCL
 
 AGX is a verifiable AI workflow engine. You type a natural‑language instruction, AGX generates a strict JSON plan using a registry of approved functions, validates the plan, and compiles the result to Terraform HCL you can inspect locally.
