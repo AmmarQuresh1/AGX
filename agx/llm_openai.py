@@ -38,7 +38,7 @@ def generate_raw_json(task: str) -> str:
     response = client.responses.create(
         model="gpt-4.1-nano-2025-04-14",  # or "gpt-4.1-mini-2025-04-14"
         input=prompt,
-        # temperature=0, # not usable with o3-mini or gpt 5 models
+        temperature=0, # not usable with o3-mini or gpt 5 models
         # reasoning={"effort":"minimal"} 
     )
 
