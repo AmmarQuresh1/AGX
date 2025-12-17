@@ -25,6 +25,13 @@ def get_real_ip(request: Request):
         return xff.split(",")[0].strip()
     return request.client.host
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://192.168.1.148:3000", "http://localhost:3000", "https://agx.run"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 redis_url = os.getenv("REDIS_URL")
 
