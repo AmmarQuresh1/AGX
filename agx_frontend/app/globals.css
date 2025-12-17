@@ -64,7 +64,7 @@ code {
 
 .hero {
   text-align: center;
-  min-height: 30vh;
+  min-height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
