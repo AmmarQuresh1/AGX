@@ -101,7 +101,14 @@ export default function Home() {
   const [result, setResult] = useState("")
   const [copied, setCopied] = useState(false);
   const [processingStep, setProcessingStep] = useState(0);
-  const MIN_SPINNER_MS = 3000; // Wait ~6s total before showing results
+  const MIN_SPINNER_MS = 2250; 
+
+  const QUICK_PROMPTS = [
+  "Create an S3 bucket named 'agx-assets' and save to infra.tf",
+  "Deploy a private bucket called 'secure-logs'", 
+  "Log 'Starting Job', create a bucket 'app-data', then log 'Done'",
+  "Create two buckets: 'frontend' and 'backend' and save to main.tf"
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Stops reload
@@ -190,19 +197,6 @@ export default function Home() {
 
   return (
     <main className="main">
-      <div
-        style={{
-          background: "var(--accent)",
-          color: "#000",
-          padding: "10px 10px",
-          textAlign: "center",
-          fontWeight: 500,
-          fontSize: "0.95rem",
-          marginBottom: "1rem"
-        }}
-      >
-        Backend services are currently offline while we apply security updates related to the recent React/Next.js vulnerability. The demo will be fully available again by 11/12/2025.
-      </div>
       <div className="container">
         {/* The logo is now in a div, not an H1. */}
         <div style={{ margin: 0, fontWeight: 'normal', fontSize: '1rem' }}>
@@ -216,30 +210,40 @@ export default function Home() {
         {/* Hero Section */}
         <div className="hero">
           <h1 className="hero-title">
-            From Prompt to Verified Terraform
+            Verification First Terraform
           </h1>
           <p className="hero-lead">
-            AGX applies static verification to guarantee LLM plan correctness, resulting in safe code generation that outperforms agentic approaches.
+            AGX uses static analysis to validate LLM-generated plans before execution. It compiles natural language into verified Terraform, ensuring type safety and logical correctness.
           </p>
             <p className="hero-sub">
             This web app shows an early prototype version of the engine. An updated version with advanced features will power an open-source CLI (Q1 2026).
             </p>
-          <button
-            onClick={() => {
-              const toolSection = document.getElementById('tool-section');
-              if (toolSection) {
-                toolSection.scrollIntoView({ behavior: 'smooth' });
-              }
-            }}
-            className="cta-btn"
-          >
-            Try the Web Demo
-          </button>
+          <div className="hero-actions">
+            <button
+              onClick={() => {
+                const toolSection = document.getElementById('tool-section');
+                if (toolSection) {
+                  toolSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="cta-btn"
+            >
+              Try the Web Demo
+            </button>
+            <a
+              href="https://github.com/AmmarQuresh1/AGX-public"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-btn-secondary"
+            >
+              GitHub
+            </a>
+          </div>
         </div>
 
         {/* Tool Section */}
         <div id="tool-section">
-          <h2 className="whitespace-normal md:whitespace-nowrap" style={{ marginBottom: 24 }}>
+          <h2 className="whitespace-normal md:whitespace-nowrap" style={{ marginBottom: 12, textAlign: "center" }}>
             Describe your infrastructure... 
           </h2>
 
@@ -264,8 +268,42 @@ export default function Home() {
             </form>
           </div>
 
+          {/* ADD THIS SECTION: Quick Prompt Chips */}
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", marginTop: "1rem" }}>
+          {QUICK_PROMPTS.map((text, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setPrompt(text)}
+              style={{
+                fontSize: "0.85rem",
+                padding: "6px 12px",
+                borderRadius: "20px",
+                border: "1px solid var(--accent)",
+                background: "transparent",
+                color: "var(--foreground)", // Adjust based on your theme
+                cursor: "pointer",
+                opacity: 0.8,
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+                e.currentTarget.style.background = "var(--accent)";
+                e.currentTarget.style.color = "#000";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "0.8";
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "var(--foreground)";
+              }}
+            >
+              {text}
+            </button>
+          ))}
+        </div>
+
           <h2 style={{ marginTop: 32, marginBottom: 8, fontSize: "2rem" }}>
-          Output
+          Python to TF Script
           </h2>
           {/* PREFORMATTED BOX */}
           <div style={{ position: "relative", width: "100%", marginBottom: 16 }}>
@@ -335,7 +373,7 @@ export default function Home() {
         display: "flex",
             }}
           >
-            {/* Left Column: About the Showcase Engine */}
+            {/* Left Column: About the Engine */}
             <div style={{ flex: 1.5, paddingLeft: 10 }}>
               
               <div style={{ marginBottom: "2rem" }}>
@@ -343,17 +381,14 @@ export default function Home() {
                   Live in this Demo:
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6, marginBottom: "1rem" }}>
-                  Guarantees <strong>correct tool usage, valid inputs, and sequential logic</strong>. Unlike standard agents that "guess and fix," 
-                  AGX verifies the plan structure before compiling a single line of code.
+                  Uses a <strong>deterministic validation stage</strong> to enforce strict type safety. The engine checks every step against a function registry to prevent hallucinated parameters or invalid dependencies.
                 </p>
 
                 <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
                   Open Source CLI (Q1 2026):
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6 }}>
-                  Powered by a <strong>custom 12B model</strong> with more robust <strong>graph-based validation</strong>. 
-                  Extends capabilities to <strong>live state detection and drift prevention</strong>, plus <strong>security & compliance policies</strong>. 
-                  Includes native <strong>dry-run and rollback</strong> commands for safe production integration.
+                  Evolving into a <strong>graph-based execution engine</strong> powered by a custom lightweight model.
                 </p>
               </div>
               
@@ -363,11 +398,9 @@ export default function Home() {
                 <li><code>create_aws_s3_bucket</code></li>
                 <li><code>aws_s3_bucket_public_access_block</code></li>
                 <li><code>save_hcl_to_file</code></li>
+                <li><code>sanitise_resource_name</code></li>
+                <li><code>combine_two_hcl_blocks</code></li>
               </ul>
-
-              <p className="text-subtle" style={{ fontSize: "0.9rem", marginTop: "1.5rem", fontStyle: "italic", opacity: 0.8 }}>
-                Try: "Deploy a private S3 bucket named agx-demo and save to main.tf"
-              </p>
             </div>
             {/* Right Column: The Future */}
             <div style={{ flex: 1, paddingLeft: 20 }}>
