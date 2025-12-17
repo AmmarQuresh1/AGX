@@ -15,7 +15,9 @@ from typing import Optional
 
 # Returns to backend, always return a dict
 def agx_main(prompt: Optional[str] = None):
-    print("[AGX] Backend initialized.")
+    if not prompt:
+        print("[AGX] No prompt provided")
+        return {"error": "no_prompt"}
 
     # Load plan using your planner
     plan = generate_plan(prompt=prompt)

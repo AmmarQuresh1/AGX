@@ -49,6 +49,8 @@ def generate_script(script: Script, request: Request):
             raise HTTPException(status_code=500, detail="Plan validation failed.")
         elif result["error"] == "compilation_failed":
             raise HTTPException(status_code=500, detail="Plan compilation failed.")
+        elif result["error"] == "no_prompt":
+            raise HTTPException(status_code=400, detail="No prompt given.")
         else:
             raise HTTPException(status_code=500, detail="Unknown error.")
     return result["code"]
