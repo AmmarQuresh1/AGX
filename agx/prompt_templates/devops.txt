@@ -52,6 +52,6 @@ Reference example (valid JSON array, no prose):
   },
   {
     "function": "save_hcl_to_file",
-    "args": { "hcl_content": "{bucket_hcl}\n{block_hcl}", "filename": "main.tf" }
+    "args": { "hcl_content": "{bucket_hcl}\\n{block_hcl}", "filename": "main.tf" }
   }
 ]
