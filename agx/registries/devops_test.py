@@ -5,7 +5,6 @@ AWS-first demo registry.
 Functions must match names referenced by the planner prompt.
 """
 from __future__ import annotations
-from agx.utils import _tf_label
 
 # ----------------------
 # Demo registry functions
@@ -59,6 +58,13 @@ resource "aws_s3_bucket_public_access_block" "{label}" {{
 }}
 '''
 
+def _tf_label(name: str) -> str:
+    """Terraform-safe resource label: letters, digits, underscores; must start with a letter or underscore."""
+    import re
+    label = re.sub(r"[^A-Za-z0-9_]", "_", name)
+    if not (label and (label[0].isalpha() or label[0] == "_")):
+        label = f"r_{label}"
+    return label
 
 registry = {
     "log_message": log_message,
