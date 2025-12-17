@@ -53,3 +53,5 @@ out/
 # --- IDE / Editor Folders ---
 .vscode/
 .idea/
+
+*.tf

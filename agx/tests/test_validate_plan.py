@@ -1,44 +1,41 @@
-from agx.registries.devops_test import validate_plan, registry, EXAMPLE_PLAN, execute_plan
-import os
+from pathlib import Path
+from agx.validate_plan import validate_plan
+from agx.compiler import compile_plan
 
+EXAMPLE_PLAN = [
+    {"function": "set_bucket_name", "args": {"name": "my-demo-bucket"}, "assign": "bucket_name"},
+    {"function": "create_aws_s3_bucket", "args": {"label": "demo_bucket", "bucket_name": "{bucket_name}"}, "assign": "bucket_id"},
+    {"function": "aws_s3_bucket_public_access_block", "args": {"label": "demo_bucket", "block_all_public": True}, "assign": "pab_id"},
+    {"function": "save_hcl_to_file", "args": {"hcl_content": "{bucket_id}\\n{pab_id}", "filename": "main.tf"}}
+]
 
 def test_valid_example_plan():
     # Should raise no errors
-    validate_plan(EXAMPLE_PLAN, registry)
+    assert validate_plan(EXAMPLE_PLAN) is True
 
 
 def test_missing_function():
     bad = [{"function": "nonexistent_func", "args": {"x": 1}}]
-    try:
-        validate_plan(bad, registry)
-    except ValueError as e:
-        assert "is not allowed" in str(e)
-    else:
-        assert False, "Expected ValueError for missing function"
+    assert validate_plan(bad) is False
 
 
 def test_variable_before_assignment():
     bad = [{"function": "log_message", "args": {"message": "{undefined_var}"}}]
-    try:
-        validate_plan(bad, registry)
-    except ValueError as e:
-        assert "references undefined variable" in str(e)
-    else:
-        assert False, "Expected ValueError for undefined variable reference"
+    assert validate_plan(bad) is False
 
 
-def test_e2e_creates_main_tf(tmp_path):
-    # Execute the example using a temp main.tf path
-    plan = [dict(step) for step in EXAMPLE_PLAN]
-    plan[-1] = {
-        **plan[-1],
-        "args": {**plan[-1]["args"], "filename": str(tmp_path / "main.tf")},
-    }
+def test_e2e_creates_main_tf():
 
-    validate_plan(plan, registry)
-    execute_plan(plan, registry)
+    # Validate IR
+    assert validate_plan(EXAMPLE_PLAN) is True
 
-    tf = tmp_path / "main.tf"
+    # Compile to py code and run
+    code = compile_plan(EXAMPLE_PLAN)
+    print(code)
+    exec(code, {'__name__': '__main__'})
+
+    # Assert file and content
+    tf = Path("main.tf")
     assert tf.exists()
     content = tf.read_text(encoding="utf-8")
     assert "aws_s3_bucket" in content

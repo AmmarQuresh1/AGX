@@ -27,7 +27,7 @@ def generate_raw_json(task: str) -> str:
             "OpenAI client is not configured. Install the openai package and set OPENAI_API_KEY."
         )
     current_dir = Path(__file__).parent
-    template_path = current_dir / "prompt_templates" / "devops.txt"
+    template_path = current_dir / "prompt_templates" / "devops_test.txt" 
     with open(template_path, "r") as f:
         template = f.read()
 
@@ -35,12 +35,11 @@ def generate_raw_json(task: str) -> str:
 
     print("Prompt Sent to GPT")
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini-2025-04-14",  # or"o3-mini-2025-01-31" or "gpt-4o-2024-08-06"
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0 # not usable with o3-mini
+    response = client.responses.create(
+        model="gpt-4.1-nano-2025-04-14",  # or "gpt-4.1-mini-2025-04-14"
+        input=prompt,
+        temperature=0, # not usable with o3-mini or gpt 5 models
+        # reasoning={"effort":"minimal"} 
     )
 
-    return response.choices[0].message.content
+    return response.output_text

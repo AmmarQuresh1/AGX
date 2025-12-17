@@ -60,29 +60,29 @@ code {
 .logo-img {
   height: 40px;
   display: block;
-  margin-bottom: 32px;
 }
 
 .hero {
   text-align: center;
-  min-height: 60vh;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 32px;
 }
 .hero-title {
   font-size: 3rem;
   font-weight: 700;
-  margin: 0 0 32px 0;
   line-height: 1.1;
+  margin-top: 3vh;
 }
+
 .hero-lead {
   font-size: 1.3rem;
   color: var(--subtle);
   margin: 0 auto 48px auto;
   line-height: 1.5;
+  margin-top: 12px;
   max-width: 600px;
 }
 .hero-sub {
@@ -93,16 +93,54 @@ code {
   line-height: 1.5;
   max-width: 600px;
 }
+
+/* NEW: Container for the side-by-side buttons */
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3vh; /* Moved margin here */
+  flex-wrap: wrap; /* Safe wrapping for mobile */
+}
+
+/* UPDATED: Primary Call to Action */
 .cta-btn {
-  padding: 16px 32px;
-  font-size: 1.3rem;
+  padding: 12px 24px; /* Slightly reduced for better mobile fit */
+  font-size: 1.1rem;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--accent);
   color: #000;
   cursor: pointer;
   font-weight: 600;
-  margin-bottom: 32px;
+  /* REMOVED: margin-bottom: 3vh; */
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* NEW: Secondary "Ghost" Button (Matches CTA size) */
+.hero-btn-secondary {
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  border: 1px solid var(--subtle);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.hero-btn-secondary:hover {
+  border-color: var(--foreground);
+  background: rgba(0,0,0,0.03);
 }
 
 /* Components */
