@@ -141,8 +141,8 @@ export default function Home() {
     });
     
     // Show processing steps with guaranteed delays
-    setTimeout(() => setProcessingStep(2), 1000);  // 2 seconds for step 1
-    setTimeout(() => setProcessingStep(3), 2000);  // 4 seconds total (2 more for step 2)
+    setTimeout(() => setProcessingStep(2), 750);  
+    setTimeout(() => setProcessingStep(3), 1500);  
     
   // Wait for at least MIN_SPINNER_MS total before showing results
   setTimeout(async () => {
