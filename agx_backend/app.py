@@ -25,6 +25,13 @@ def get_real_ip(request: Request):
         return xff.split(",")[0].strip()
     return request.client.host
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://192.168.1.148:3000", "http://localhost:3000", "https://agx.run"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 redis_url = os.getenv("REDIS_URL")
 
@@ -36,7 +43,14 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 @app.post("/", response_class=PlainTextResponse)
 @limiter.limit("5/day") # Set limits here
 def generate_script(script: Script, request: Request):
-    code = agx_main(script.prompt)
-    if not code:
-        raise HTTPException(status_code=500, detail="Plan generation failed.")
-    return code
+    result = agx_main(script.prompt)
+    if "error" in result:
+        if result["error"] == "validation_failed":
+            raise HTTPException(status_code=500, detail="Plan validation failed.")
+        elif result["error"] == "compilation_failed":
+            raise HTTPException(status_code=500, detail="Plan compilation failed.")
+        elif result["error"] == "no_prompt":
+            raise HTTPException(status_code=400, detail="No prompt given.")
+        else:
+            raise HTTPException(status_code=500, detail="Unknown error.")
+    return result["code"]

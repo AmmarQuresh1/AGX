@@ -55,13 +55,13 @@ def validate_plan(plan):
         args = step.get("args", {})
         assign = step.get("assign")
 
-        #  ============ FUNCTION EXISTENCE CHECK ============
+        # FUNCTION EXISTENCE CHECK 
         # Only valid function names can be used
         if fn not in registry:
             errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' does not exist.")
             continue # Skip validation for non existent functions
 
-        #  ============ PARAMETER AND TYPE VALIDATION ============
+        # PARAMETER AND TYPE VALIDATION 
         sig = signature(registry[fn])
 
         # Check each provided argument against function parameters
@@ -84,27 +84,29 @@ def validate_plan(plan):
         if sig.return_annotation is inspect.Parameter.empty:
             errors.append(f"[Plan Error] Step {i+1}: Function '{fn}' lacks return type hint.")    
 
-        #  ============ REQUIRED PARAMETER CHECK ============
+        # REQUIRED PARAMETER CHECK 
         provided_params = set(args.keys())
         for param_name, param in sig.parameters.items():
             if (param.default == inspect.Parameter.empty and 
                 param_name not in provided_params):
                 errors.append(f"[Plan Error] Step {i+1}: Missing required parameter '{param_name}' for function '{fn}'")
 
-        #  ============ VARIABLE REFERENCE VALIDATION ============
+        # VARIABLE REFERENCE VALIDATION 
         # Check if any arguments reference variables (format: {variable_name})
         for k, v in args.items():
             if isinstance(v, str) and re.match(r"^{.*}$", v): 
-                var_name = v[1:-1] # Remove the curly braces
-                if var_name not in assigned_vars: 
-                    errors.append(f"[Plan Error] Step {i+1}: Variable '{var_name}' used in argument '{k}' before assignment.")
+                matches = re.findall(r"\{[^{}]*\}", v)
+                for pair in matches:
+                    var_name = pair[1:-1] # Remove the outer curly brace of step
+                    if var_name not in assigned_vars:
+                        errors.append(f"[Plan Error] Step {i+1}: Variable '{var_name}' used in argument '{k}' before assignment.")
 
-        #  ============ TRACK ASSIGNMENTS ============
+        #  TRACK ASSIGNMENTS 
         # Track this step's assigned variable for future steps
         if assign:
             assigned_vars.add(assign)
 
-    #  ============ RETURN RESULTS ============
+    # RETURN RESULTS 
     if errors:
         print("[AGX Validator] Plan validation failed:")
         for error in errors:
