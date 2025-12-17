@@ -123,7 +123,14 @@ export default function Home() {
       if (response.status == 429) {
         throw new Error("Rate limit reached: 5 plans per day. Please try again tomorrow.");
       }
-      if (!response.ok) throw new Error("Failed to get code.");
+      if (!response.ok) {
+        let errorMsg = "Unknown error."
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) errorMsg = errorData.detail;
+        } catch {}
+        throw new Error(errorMsg);
+      }
       
       const code = await response.text();
       return code;

@@ -13,6 +13,7 @@ from .planner import generate_plan
 from .validate_plan import validate_plan
 from typing import Optional
 
+# Returns to backend, always return a dict
 def agx_main(prompt: Optional[str] = None):
     print("[AGX] Backend initialized.")
 
@@ -21,13 +22,13 @@ def agx_main(prompt: Optional[str] = None):
 
     if validate_plan(plan):
         print("[AGX] Compiling plan...")
-        generate_code = compile_plan(plan)
+        code = compile_plan(plan)
 
-        if generate_code:
-            return generate_code
+        if code:
+            return {"code": code}
         else:
             print("[AGX] Compilation failed.")
-            return None
+            return {"error": "compilation_failed"}
     else:
         print("[AGX] Plan validation failed - cannot compile.")
-        return None
+        return {"error": "validation_failed"}
