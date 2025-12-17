@@ -58,7 +58,7 @@ resource "aws_s3_bucket_public_access_block" "{label}" {{
 }}
 '''
 
-def _tf_label(name: str) -> str:
+def sanitise_resource_name(name: str) -> str:
     """Terraform-safe resource label: letters, digits, underscores; must start with a letter or underscore."""
     import re
     label = re.sub(r"[^A-Za-z0-9_]", "_", name)
@@ -66,11 +66,16 @@ def _tf_label(name: str) -> str:
         label = f"r_{label}"
     return label
 
+def combine_two_hcl_blocks(block1: str, block2: str) -> str:
+    """Joins two HCL blocks into one string with a newline"""
+    return f"{block1}\n\n{block2}"
+
 registry = {
     "log_message": log_message,
     "set_bucket_name": set_bucket_name,
     "create_aws_s3_bucket": create_aws_s3_bucket,
     "aws_s3_bucket_public_access_block": aws_s3_bucket_public_access_block,
     "save_hcl_to_file": save_hcl_to_file,
-    "_tf_label": _tf_label
+    "sanitise_resource_name": sanitise_resource_name,
+    "combine_two_hcl_blocks": combine_two_hcl_blocks
 }
