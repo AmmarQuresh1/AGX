@@ -27,7 +27,7 @@ def generate_raw_json(task: str) -> str:
             "OpenAI client is not configured. Install the openai package and set OPENAI_API_KEY."
         )
     current_dir = Path(__file__).parent
-    template_path = current_dir / "prompt_templates" / "devops.txt"
+    template_path = current_dir / "prompt_templates" / "devops_test.txt" 
     with open(template_path, "r") as f:
         template = f.read()
 
