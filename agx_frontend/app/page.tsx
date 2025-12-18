@@ -77,7 +77,7 @@ function CLICard() {
         <input type="hidden" name="source" value="agx.run_cli_card" />
         <input type="hidden" name="product" value="AGX CLI (private alpha)" />
 
-    <button type="submit" disabled={submitting} className="rounded-md button" style={{ width: "fit-content", background: submitting ? "var(--accent)" : "var(--surface)" }}>
+        <button type="submit" disabled={submitting} className="rounded-md button" style={{ width: "fit-content", background: submitting ? "var(--accent)" : "var(--surface)" }}>
           {submitting ? "Submitting…" : "Join early list"}
         </button>
 
@@ -85,7 +85,7 @@ function CLICard() {
           <p
             aria-live="polite"
             className="text-sm"
-      style={{ color: notice.type === "success" ? "#0a7d3b" : "#b00020" }}
+            style={{ color: notice.type === "success" ? "#0a7d3b" : "#b00020" }}
           >
             {notice.text}
           </p>
@@ -248,7 +248,7 @@ export default function Home() {
           </h2>
 
           {/* Responsive form container */}
-          <div className="prompt-form-container" style={{ width: "100%", maxWidth: "90%", margin: "0 auto" }}>
+          <div className="prompt-form-container" style={{ width: "100%", margin: "0 auto" }}>
             <form onSubmit={handleSubmit} className="prompt-form" style={{ marginTop: 8, justifyContent: "center" }}>
               <input
                 value={prompt}
@@ -261,50 +261,51 @@ export default function Home() {
                 type="submit"
                 disabled={downloading || !prompt}
                 className="prompt-btn button"
-                style={{ padding: "12px 24px", fontSize: "1.2rem", whiteSpace: "nowrap", background: downloading ? "var(--accent)" : "var(--surface)" }}
+                style={{ fontSize: "1.2rem", background: downloading ? "var(--accent)" : "var(--surface)" }}
               >
                 {downloading ? "Generating..." : "Generate Script"}
               </button>
             </form>
           </div>
 
-          {/* ADD THIS SECTION: Quick Prompt Chips */}
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", marginTop: "1rem" }}>
-          {QUICK_PROMPTS.map((text, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setPrompt(text)}
-              style={{
-                fontSize: "0.85rem",
-                padding: "6px 12px",
-                borderRadius: "20px",
-                border: "1px solid var(--accent)",
-                background: "transparent",
-                color: "var(--foreground)", // Adjust based on your theme
-                cursor: "pointer",
-                opacity: 0.8,
-                transition: "all 0.2s"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = "1";
-                e.currentTarget.style.background = "var(--accent)";
-                e.currentTarget.style.color = "#000";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = "0.8";
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "var(--foreground)";
-              }}
-            >
-              {text}
-            </button>
-          ))}
-        </div>
+          {/* Quick Prompt Chips */}
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center", marginTop: "1rem" }}>
+            {QUICK_PROMPTS.map((text, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setPrompt(text)}
+                style={{
+                  fontSize: "0.85rem",
+                  padding: "6px 12px",
+                  borderRadius: "20px",
+                  border: "1px solid var(--accent)",
+                  background: "transparent",
+                  color: "var(--foreground)",
+                  cursor: "pointer",
+                  opacity: 0.8,
+                  transition: "all 0.2s"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.background = "var(--accent)";
+                  e.currentTarget.style.color = "#000";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "0.8";
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.color = "var(--foreground)";
+                }}
+              >
+                {text}
+              </button>
+            ))}
+          </div>
 
-          <h2 style={{ marginTop: 32, marginBottom: 8, fontSize: "2rem" }}>
-          Python to TF Script
+          <h2 style={{ marginTop: 32, marginBottom: 8 }}>
+            Python to TF Script
           </h2>
+          
           {/* PREFORMATTED BOX */}
           <div style={{ position: "relative", width: "100%", marginBottom: 16 }}>
             <pre
@@ -347,21 +348,21 @@ export default function Home() {
           >
             Download Script
           </button>
-          </div>
         </div>
+      </div> {/* CLOSES .container */}
 
-        {/* New parent container for centering and constraining width */}
-  <div style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 1rem", marginTop: 16 }}>
+      {/* About Section - NOW A SIBLING, SO IT CAN BE WIDER */}
+      <div style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 1rem", marginTop: 16 }}>
           <h2 style={{
             textAlign: "center",
-            marginBottom: 32,
+            marginBottom: -20,
             marginTop: 48
           }}>
             About the Engine
           </h2>
           
           {/* Responsive two-column container */}
-      <div
+          <div
             className="roadmap-container"
             style={{
               maxWidth: 1000,
@@ -370,7 +371,6 @@ export default function Home() {
               marginTop: "2rem",
               paddingTop: "2rem",
               gap: "2rem",
-        display: "flex",
             }}
           >
             {/* Left Column: About the Engine */}
