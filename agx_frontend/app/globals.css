@@ -12,8 +12,7 @@
   --code-surface: #f9f8f5; /* code block background */
 }
 
-/* Map fonts directly (Next Fonts define these CSS variables in layout) */
-
+/* Map fonts directly */
 body {
   background: var(--background);
   color: var(--foreground);
@@ -21,7 +20,7 @@ body {
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: 2.0rem;
   font-weight: 500;
 }
 
@@ -80,33 +79,30 @@ code {
 .hero-lead {
   font-size: 1.3rem;
   color: var(--subtle);
-  margin: 0 auto 48px auto;
+  margin: 10px auto 20px auto;
   line-height: 1.5;
-  margin-top: 12px;
   max-width: 600px;
 }
 .hero-sub {
   font-size: 0.9rem;
   color: var(--muted);
-  margin: 0 auto 48px auto;
-  margin-top: -24px;
+  margin: 0px auto 30px auto;
   line-height: 1.5;
-  max-width: 600px;
+  max-width: 500px;
 }
 
-/* NEW: Container for the side-by-side buttons */
+/* Container for the side-by-side buttons */
 .hero-actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  margin-bottom: 3vh; /* Moved margin here */
-  flex-wrap: wrap; /* Safe wrapping for mobile */
+  flex-wrap: wrap; 
 }
 
-/* UPDATED: Primary Call to Action */
+/* Primary Call to Action */
 .cta-btn {
-  padding: 12px 24px; /* Slightly reduced for better mobile fit */
+  padding: 12px 24px; 
   font-size: 1.1rem;
   border-radius: 6px;
   border: 1px solid var(--border);
@@ -114,14 +110,13 @@ code {
   color: #000;
   cursor: pointer;
   font-weight: 600;
-  /* REMOVED: margin-bottom: 3vh; */
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-/* NEW: Secondary "Ghost" Button (Matches CTA size) */
+/* Secondary "Ghost" Button */
 .hero-btn-secondary {
   padding: 12px 24px;
   font-size: 1.1rem;
@@ -147,7 +142,7 @@ code {
 .card {
   border: 1px solid var(--border);
   background: var(--surface);
-  padding: 16px;
+  padding: 24px; /* Increased from 16px for better vibe */
 }
 
 .input {
@@ -231,30 +226,16 @@ code {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e0ddd6;   /* Matches your box color, or go lighter */
+  background: #e0ddd6; 
   border-radius: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* This is the container for your two columns */
 .roadmap-container {
   display: flex;
-  flex-direction: row; /* Side-by-side on desktop */
-}
-
-/* When the screen is narrower than 768px (a typical tablet/mobile breakpoint) */
-@media (max-width: 768px) {
-  .roadmap-container {
-    flex-direction: column; /* Stack vertically on mobile */
-    gap: 2rem;
-  }
-  .roadmap-container > div {
-    border-left: none !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
+  flex-direction: row; 
 }
 
 .prompt-form-container {
@@ -278,12 +259,76 @@ code {
   white-space: nowrap;
 }
 
+/* --- MOBILE TWEAKS --- */
+
+/* Tablet/Mobile Breakpoint */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    max-width: 100vw;
+    /* KEY CHANGE: Increase padding from 8px to 24px for "Air" */
+    padding: 0 24px; 
+  }
+
+  .roadmap-container {
+    flex-direction: column; 
+    gap: 3rem; /* Increased gap from 2rem to 3rem for spacing */
+  }
+  .roadmap-container > div {
+    border-left: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* Smaller Mobile Breakpoint */
 @media (max-width: 600px) {
+  /* Relax the layout so it isn't so dense */
+  .main {
+    padding-top: 2rem; /* Reduce top spacing slightly so hero isn't pushed too far down initially */
+  }
+
+  .hero {
+    min-height: auto; /* Allow hero to be natural height */
+    padding: 40px 0;  /* Add breathing room top/bottom */
+  }
+
+  .hero-title {
+    font-size: 2.3rem !important;
+    margin-top: 10px; /* Reset the 3vh */
+  }
+  
+  .hero-lead {
+    font-size: 1.15rem !important;
+    margin-bottom: 30px; /* Give space before buttons */
+  }
+
+  /* KEY CHANGE: Stack the form on mobile for a pro look */
   .prompt-form {
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
   }
+  
   .prompt-btn {
-    width: 100%;
+    width: 100%; /* Full width button is easier to tap */
+    padding: 14px !important;
+  }
+  
+  .input {
+    padding: 14px 12px !important; /* Slightly taller inputs */
+  }
+
+  /* Font resizing */
+  .hero-sub {
+    font-size: 1rem !important;
+  }
+  h2 {
+    font-size: 1.75rem !important; /* Slightly larger than 1.5rem for impact */
+    margin-bottom: 24px !important;
+  }
+  
+  .footer-blurb,
+  .footer-line {
+    font-size: 0.95rem !important;
   }
 }
