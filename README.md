@@ -28,18 +28,18 @@ graph TD
     H_Fix -->|Log Human Pair| G[DPO Dataset Store]
 
     %% --- PATH 3: SUCCESS (Hot Path - Ops) ---
+    %% Branch A: Persistence (The "State" for Replanning)
+    C -- Valid --> J[User DB <br/><i>Store Assembled JSON IR</i>]
+
+    %% Branch B: Execution (The "Artifact")
     C -- Valid --> D[Compiler]
     
     D -->|Synthesize| Py[Synthesized Python Script]
     
-    %% Branch A: Execution
     Py -->|Run| E[Executor]
     E -->|Emit Artifacts| T[Terraform Files]
     T --> H[Return Artifacts to CLI]
     
-    %% Branch B: Persistence
-    Py -->|Store Script| J[User DB <br/><i>Keyed by GitHub ID</i>]
-
     %% --- PATH 4: SUCCESS (Cold Path - Training) ---
     %% We extract the Generic Skeleton JSON (S) from the success state
     C -- Valid --> Syn1[Extract Valid Skeleton JSON]
