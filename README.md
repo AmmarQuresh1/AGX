@@ -1,5 +1,5 @@
 # AGX Development Status - Paused for Uni Exams
-##Architecture
+## Architecture
 ```mermaid
 graph TD
     %% --- INPUT LAYER ---
