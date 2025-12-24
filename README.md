@@ -1,4 +1,9 @@
-# AGX Development Status - Paused for Uni Exams
+# AGX: From Prompt → JSON Plan → Validated → Terraform HCL
+
+AGX is a verifiable AI workflow engine. You type a natural‑language instruction, AGX generates a strict JSON plan using a registry of approved functions, validates the plan, and compiles the result to Terraform HCL you can inspect locally.
+
+**Live demo:** https://agx.run
+
 ## Architecture
 ```mermaid
 graph TD
@@ -39,7 +44,7 @@ graph TD
     Py -->|Run| E[Executor]
     E -->|Emit Artifacts| T[Terraform Files]
     T --> H[Return Artifacts to CLI]
-    
+
     %% --- PATH 4: SUCCESS (Cold Path - Training) ---
     %% We extract the Generic Skeleton JSON (S) from the success state
     C -- Valid --> Syn1[Extract Valid Skeleton JSON]
@@ -58,34 +63,12 @@ graph TD
     %%style G fill:#f9f,stroke:#333,stroke-width:2px
     %%style K fill:#f9f,stroke:#333,stroke-width:2px
 ```
-## Current Context
-- **Goal:** Implement "Replanning" (taking existing IR + new prompt -> new IR).
-- **Current State:** Basic compiler works. Validation works.
-- **Next Immediate Task:** Need to implement dependency resolution for the replanner.
 
-## The "Replanning" Logic (Don't Forget!)
-1.  System needs to read the existing JSON plan (IR).
-2.  LLM needs to see:
-    - The User's new prompt.
-    - The *current* state (the old IR).
-3.  The output must be a *new* complete IR that replaces the old one.
-4.  **Critical:** The compiler must overwrite `agx_resources.tf` completely.
+## What This Repo Demonstrates
 
-## Outstanding Questions
-- How do we handle state drift? (For now: assume IR is source of truth).
-- Where does `inspect.getsource` need to be updated if we add new registry functions?
-
-# AGX: From Prompt → JSON Plan → Validated → Terraform HCL
-
-AGX is a verifiable AI workflow engine. You type a natural‑language instruction, AGX generates a strict JSON plan using a registry of approved functions, validates the plan, and compiles the result to Terraform HCL you can inspect locally.
-
-Live demo: https://agx.run
-
-## What this repo demonstrates
-
-- Prompt → JSON plan (AWS‑first demo)
-- Plan validator: ensures only registry functions, correct keys, and valid variable references
-- Compiler/runtime: turns the plan into Terraform HCL and writes `main.tf`
+- **Prompt → JSON Plan**: AWS-first demo with structured plan generation
+- **Plan Validator**: Ensures only registry functions, correct parameters, and valid variable references
+- **Compiler/Runtime**: Turns validated plans into Terraform HCL and writes `main.tf`
 
 ## Quickstart
 
@@ -100,14 +83,15 @@ python agx/registries/devops_test.py
 
 This creates a `main.tf` in the repository root containing an `aws_s3_bucket` and an accompanying `aws_s3_bucket_public_access_block`.
 
-## Example prompt and expected plan
+## Example
 
-Prompt:
-
+**Prompt:**
+```
 Create an S3 bucket agx-demo-123 with all public access blocked and save to main.tf.
+```
 
-Expected planner output (JSON array only):
-
+**Expected planner output (JSON array):**
+```json
 [
   {
     "function": "set_bucket_name",
@@ -116,12 +100,12 @@ Expected planner output (JSON array only):
   },
   {
     "function": "create_aws_s3_bucket",
-    "args": { "bucket_name": "{bucket_name}" },
+    "args": { "label": "demo_bucket", "bucket_name": "{bucket_name}" },
     "assign": "bucket_hcl"
   },
   {
     "function": "aws_s3_bucket_public_access_block",
-    "args": { "bucket_name": "{bucket_name}", "block_all_public": true },
+    "args": { "label": "demo_bucket", "block_all_public": true },
     "assign": "block_hcl"
   },
   {
@@ -129,19 +113,45 @@ Expected planner output (JSON array only):
     "args": { "hcl_content": "{bucket_hcl}\n{block_hcl}", "filename": "main.tf" }
   }
 ]
+```
 
-## Safety
+## Safety Features
 
-- Registry‑only execution; no freeform shell
-- Strict JSON: only `function`, `args`, and optional `assign`
-- Variable references must be previously assigned (e.g., `"{bucket_name}"`)
-- HCL is written to a local file for inspection (`main.tf`)
+- **Registry-only execution**: No freeform shell access
+- **Strict JSON schema**: Only `function`, `args`, and optional `assign` keys
+- **Variable reference validation**: Variables must be previously assigned
+- **Type checking**: Arguments validated against function signatures
+- **Local file output**: HCL written to `main.tf` for inspection before execution
+
+## Development Status
+
+**Current State:**
+- ✅ Basic compiler works
+- ✅ Validation works
+- ✅ Plan generation and compilation pipeline functional
+
+**Next Steps:**
+- Implement "Replanning" (taking existing IR + new prompt → new IR)
+- Dependency resolution for the replanner
+- State drift handling
+
+**The "Replanning" Logic:**
+1. System reads the existing JSON plan (IR)
+2. LLM receives:
+   - The user's new prompt
+   - The current state (the old IR)
+3. Output is a new complete IR that replaces the old one
+4. **Critical:** The compiler must overwrite `agx_resources.tf` completely
+
+**Outstanding Questions:**
+- How do we handle state drift? (For now: assume IR is source of truth)
+- Where does `inspect.getsource` need to be updated if we add new registry functions?
 
 ## Roadmap
 
-- Today: S3 bucket + public access block + save to file
-- Next: VPC, IAM, RDS primitives
-- Then: CI/CD flows (GitHub Actions) and Kubernetes
+- **Current**: S3 bucket + public access block + save to file
+- **Next**: VPC, IAM, RDS primitives
+- **Future**: CI/CD flows (GitHub Actions) and Kubernetes
 
 ## Frontend
 
