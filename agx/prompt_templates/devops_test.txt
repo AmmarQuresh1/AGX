@@ -1,5 +1,7 @@
 Instruction: {{TASK}}
 
+{{PREVIOUS_PLAN_WITH_ERRORS}}
+
 Reject instruction returning log_message in valid form if:
 - question
 - purely conversational 
