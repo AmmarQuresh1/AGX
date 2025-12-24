@@ -10,16 +10,17 @@ Generates a plan based on user input.
 # To use Mistral planner move mistral_planner from agx/archive to agx/ and uncomment the import below:
 # from .mistral_planner import generate_plan_from_mistral #mistral (currently archived)
 from .llm_openai import generate_raw_json #openai
+from typing import Optional
 import json
 import re
 
-def generate_plan(prompt=None):
+def generate_plan(prompt=None, previous_plan=None, validation_errors=None):
     # Interactively prompts user if no input is provided
     if not prompt:
         prompt = input("[AGX] What would you like to do? ")
 
     print("[AGX Planner] Generating plan...")
-    raw_output = generate_raw_json(prompt)
+    raw_output = generate_raw_json(prompt, previous_plan=previous_plan, validation_errors=validation_errors)
 
     print("=== RAW AI OUTPUT ===")
     print(raw_output)
