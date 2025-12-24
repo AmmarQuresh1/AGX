@@ -11,23 +11,31 @@ EXAMPLE_PLAN = [
 
 def test_valid_example_plan():
     # Should raise no errors
-    assert validate_plan(EXAMPLE_PLAN) is True
+    is_valid, errors = validate_plan(EXAMPLE_PLAN)
+    assert is_valid is True
+    assert errors == []
 
 
 def test_missing_function():
     bad = [{"function": "nonexistent_func", "args": {"x": 1}}]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_variable_before_assignment():
     bad = [{"function": "log_message", "args": {"message": "{undefined_var}"}}]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_e2e_creates_main_tf():
 
     # Validate IR
-    assert validate_plan(EXAMPLE_PLAN) is True
+    is_valid, errors = validate_plan(EXAMPLE_PLAN)
+    assert is_valid is True
+    assert errors == []
 
     # Compile to py code and run
     code = compile_plan(EXAMPLE_PLAN)
@@ -49,7 +57,9 @@ def test_multi_variable_undefined():
         {"function": "set_bucket_name", "args": {"name": "test"}, "assign": "bucket_name"},
         {"function": "save_hcl_to_file", "args": {"hcl_content": "{bucket_name}\n{undefined_var}"}}
     ]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_multi_variable_valid():
@@ -59,7 +69,9 @@ def test_multi_variable_valid():
         {"function": "create_aws_s3_bucket", "args": {"label": "test", "bucket_name": "{bucket_name}"}, "assign": "bucket_id"},
         {"function": "save_hcl_to_file", "args": {"hcl_content": "{bucket_name}\n{bucket_id}"}}
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
 
 
 def test_variable_in_middle_of_string():
@@ -68,7 +80,9 @@ def test_variable_in_middle_of_string():
         {"function": "set_bucket_name", "args": {"name": "test"}, "assign": "bucket_name"},
         {"function": "log_message", "args": {"message": "Bucket: {bucket_name} is ready"}}
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
 
 
 def test_empty_variable_reference():
@@ -76,7 +90,9 @@ def test_empty_variable_reference():
     bad = [
         {"function": "log_message", "args": {"message": "{}"}}
     ]
-    assert validate_plan(bad) is False  # Empty var name should fail
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False  # Empty var name should fail
+    assert len(errors) > 0
 
 
 # Type Checking Tests
@@ -85,7 +101,9 @@ def test_type_mismatch_str_expected_int_given():
     bad = [
         {"function": "set_bucket_name", "args": {"name": 12345}}  # name should be str
     ]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_type_mismatch_bool_expected_str_given():
@@ -93,7 +111,9 @@ def test_type_mismatch_bool_expected_str_given():
     bad = [
         {"function": "aws_s3_bucket_public_access_block", "args": {"label": "test", "block_all_public": "true"}}  # should be bool
     ]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_valid_bool_type():
@@ -101,7 +121,9 @@ def test_valid_bool_type():
     valid = [
         {"function": "aws_s3_bucket_public_access_block", "args": {"label": "test", "block_all_public": True}}
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
 
 
 def test_valid_str_type():
@@ -109,7 +131,9 @@ def test_valid_str_type():
     valid = [
         {"function": "set_bucket_name", "args": {"name": "test-bucket"}}
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
 
 
 # Parameter Validation Tests
@@ -118,7 +142,9 @@ def test_unknown_parameter():
     bad = [
         {"function": "set_bucket_name", "args": {"name": "test", "unknown_param": "value"}}
     ]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_missing_required_parameter():
@@ -126,7 +152,9 @@ def test_missing_required_parameter():
     bad = [
         {"function": "create_aws_s3_bucket", "args": {"label": "test"}}  # missing bucket_name
     ]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_optional_parameter_default():
@@ -134,7 +162,9 @@ def test_optional_parameter_default():
     valid = [
         {"function": "save_hcl_to_file", "args": {"hcl_content": "test"}}  # filename has default
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
 
 
 def test_optional_parameter_provided():
@@ -142,26 +172,34 @@ def test_optional_parameter_provided():
     valid = [
         {"function": "save_hcl_to_file", "args": {"hcl_content": "test", "filename": "custom.tf"}}
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
 
 
 # Edge Cases
 def test_empty_plan():
     """Test empty plan validation"""
-    assert validate_plan([]) is True
+    is_valid, errors = validate_plan([])
+    assert is_valid is True
+    assert errors == []
 
 
 def test_none_function():
     """Test plan with None function (should fail)"""
     bad = [{"function": None, "args": {}}]
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_missing_function_key():
     """Test plan missing function key"""
     bad = [{"args": {"name": "test"}}]
     # This will fail because fn = step.get("function") returns None
-    assert validate_plan(bad) is False
+    is_valid, errors = validate_plan(bad)
+    assert is_valid is False
+    assert len(errors) > 0
 
 
 def test_complex_variable_chain():
@@ -171,4 +209,6 @@ def test_complex_variable_chain():
         {"function": "set_bucket_name", "args": {"name": "{a}"}, "assign": "b"},
         {"function": "set_bucket_name", "args": {"name": "{b}"}, "assign": "c"}
     ]
-    assert validate_plan(valid) is True
+    is_valid, errors = validate_plan(valid)
+    assert is_valid is True
+    assert errors == []
