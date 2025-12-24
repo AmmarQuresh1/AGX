@@ -78,3 +78,37 @@ def test_complex_plan():
     assert "b1 = set_bucket_name(name='agx-a')" in code
     assert "b2 = set_bucket_name(name='agx-b')" in code
     assert 'log_message(message=f"First: {b1}, Second: {b2}")' in code
+
+
+def test_multi_variable_with_newlines():
+    """Test compilation of multi-variable strings with newlines"""
+    plan = [
+        {"function": "set_bucket_name", "args": {"name": "test"}, "assign": "bucket_name"},
+        {"function": "create_aws_s3_bucket", "args": {"label": "test", "bucket_name": "{bucket_name}"}, "assign": "bucket_id"},
+        {"function": "save_hcl_to_file", "args": {"hcl_content": "{bucket_id}\n{bucket_name}"}}
+    ]
+    code = compile_plan(plan)
+    assert 'hcl_content=f"{bucket_id}\n{bucket_name}"' in code
+
+
+def test_variable_in_middle_of_string():
+    """Test variable reference in middle of string compilation"""
+    plan = [
+        {"function": "set_bucket_name", "args": {"name": "test"}, "assign": "bucket"},
+        {"function": "log_message", "args": {"message": "Bucket: {bucket} is ready"}}
+    ]
+    code = compile_plan(plan)
+    assert 'message=f"Bucket: {bucket} is ready"' in code
+
+
+def test_complex_variable_chain_compilation():
+    """Test A→B→C variable dependency chain compilation"""
+    plan = [
+        {"function": "set_bucket_name", "args": {"name": "a"}, "assign": "a"},
+        {"function": "set_bucket_name", "args": {"name": "{a}"}, "assign": "b"},
+        {"function": "log_message", "args": {"message": "Chain: {a} -> {b}"}}
+    ]
+    code = compile_plan(plan)
+    assert "a = set_bucket_name(name='a')" in code
+    assert 'b = set_bucket_name(name=f"{a}")' in code
+    assert 'message=f"Chain: {a} -> {b}"' in code

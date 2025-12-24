@@ -39,6 +39,25 @@ def _check_type(value, type_hint):
     try:
         if str(type_hint) == 'typing.Any' or type_hint is typing.Any:
             return True
+        
+        # Handle string type hints from __future__ annotations
+        if isinstance(type_hint, str):
+            # Convert string hint to actual type
+            type_map = {
+                'str': str,
+                'int': int,
+                'bool': bool,
+                'float': float,
+                'None': type(None),
+                'NoneType': type(None),
+            }
+            actual_type = type_map.get(type_hint)
+            if actual_type is not None:
+                return isinstance(value, actual_type)
+            # For unknown string hints, be lenient (fallback)
+            return True
+        
+        # Handle actual type objects
         if _is_basic_type(type_hint) and isinstance(type_hint, type):
             return isinstance(value, type_hint)
     except Exception:
@@ -94,7 +113,7 @@ def validate_plan(plan):
         # VARIABLE REFERENCE VALIDATION 
         # Check if any arguments reference variables (format: {variable_name})
         for k, v in args.items():
-            if isinstance(v, str) and re.match(r"^{.*}$", v): 
+            if isinstance(v, str) and "{" in v and "}" in v: 
                 matches = re.findall(r"\{[^{}]*\}", v)
                 for pair in matches:
                     var_name = pair[1:-1] # Remove the outer curly brace of step
