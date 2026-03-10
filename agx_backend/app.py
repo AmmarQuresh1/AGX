@@ -27,7 +27,7 @@ def get_real_ip(request: Request):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://192.168.1.148:3000", "http://localhost:3000", "https://agx.run"], 
+    allow_origins=["http://localhost:3000", "https://agx.run"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
