@@ -5,96 +5,6 @@ import { FiCopy } from "react-icons/fi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
-function CLICard() {
-  const [submitting, setSubmitting] = useState(false);
-  const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-  // Set to true if you’re sending marketing emails to UK users (UK GDPR/PECR opt‑in).
-  const REQUIRE_UK_OPT_IN = true;
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitting(true);
-    setNotice(null);
-
-    const form = e.currentTarget;
-    const data = new FormData(form);
-
-    try {
-      const res = await fetch("https://formspree.io/f/mwpnagok", {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-
-      if (res.ok) {
-        form.reset();
-        setNotice({ type: "success", text: "Thanks! I’ll send you an email." });
-      } else {
-        setNotice({ type: "error", text: "Sorry, couldn’t submit. Please email cli@agx.run." });
-      }
-    } catch {
-      setNotice({ type: "error", text: "Network error. Please try again or email cli@agx.run." });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <div className="mt-8 rounded-2xl card">
-      <h3 className="text-sm font-semibold">AGX CLI (private alpha)</h3>
-      <ul className="mt-2 list-disc pl-5 text-sm leading-6 text-subtle">
-        <li><strong>Cloud Engine:</strong> Powered by a custom 12B model.</li>
-        <li><strong>Local Execution:</strong> Your AWS credentials never leave your machine.</li>
-        <li><strong>Open Source:</strong> Fully auditable CLI code (coming Q1).</li>
-      </ul>
-
-      <form onSubmit={handleSubmit} className="mt-3" style={{ display: "grid", gap: 8 }}>
-        {/* honeypot to reduce spam */}
-        <input type="text" name="_gotcha" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
-
-        {/* required email—single field for simplicity */}
-        <label className="text-sm text-subtle">
-          Work email
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="you@company.com"
-            className="mt-1 w-full input"
-          />
-        </label>
-
-        {/* optional UK marketing consent */}
-        {REQUIRE_UK_OPT_IN && (
-          <label className="flex items-start gap-2 text-sm text-subtle">
-            <input type="checkbox" name="consent" required className="mt-1" />
-            <span>I agree to receive emails about the AGX CLI private alpha.</span>
-          </label>
-        )}
-
-        {/* context/segmentation */}
-        <input type="hidden" name="source" value="agx.run_cli_card" />
-        <input type="hidden" name="product" value="AGX CLI (private alpha)" />
-
-        <button type="submit" disabled={submitting} className="rounded-md button" style={{ width: "fit-content", background: submitting ? "var(--accent)" : "var(--surface)" }}>
-          {submitting ? "Submitting…" : "Join early list"}
-        </button>
-
-        {notice && (
-          <p
-            aria-live="polite"
-            className="text-sm"
-            style={{ color: notice.type === "success" ? "#0a7d3b" : "#b00020" }}
-          >
-            {notice.text}
-          </p>
-        )}
-      </form>
-    </div>
-  );
-}
-
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [downloading, setDownloading] = useState(false);
@@ -213,10 +123,10 @@ export default function Home() {
             Verification First Terraform
           </h1>
           <p className="hero-lead">
-            AGX uses static analysis to validate LLM-generated plans before execution. It compiles natural language into verified Terraform, ensuring type safety and logical correctness.
+            AGX is a single-shot agentic Terraform generator that constrains the LLM planner to a predefined function registry, statically validating each generated plan before compilation. It checks for function existence, parameter usage, variable assignment order, and type correctness.
           </p>
             <p className="hero-sub">
-            This web app shows an early prototype version of the engine. An updated version with advanced features will power an open-source CLI (Q1 2026).
+            An independent project exploring whether moving validation earlier and restricting output to a known function registry can produce more predictable LLM-generated infrastructure.
             </p>
           <div className="hero-actions">
             <button
@@ -231,7 +141,7 @@ export default function Home() {
               Try the Web Demo
             </button>
             <a
-              href="https://github.com/AmmarQuresh1/AGX-public"
+              href="https://github.com/AmmarQuresh1/AGX"
               target="_blank"
               rel="noopener noreferrer"
               className="hero-btn-secondary"
@@ -378,17 +288,17 @@ export default function Home() {
               
               <div style={{ marginBottom: "2rem" }}>
                 <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
-                  Live in this Demo:
+                  How it works:
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6, marginBottom: "1rem" }}>
                   Uses a <strong>deterministic validation stage</strong> to enforce strict type safety. The engine checks every step against a function registry to prevent hallucinated parameters or invalid dependencies.
                 </p>
 
                 <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
-                  Open Source CLI (Q1 2026):
+                  Future work:
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6 }}>
-                  Evolving into a <strong>graph-based execution engine</strong> powered by a custom lightweight model.
+                  The most significant missing piece is DAG-based validation — currently the validator only checks plan format, not execution order or dependency soundness.
                 </p>
               </div>
               
@@ -402,10 +312,7 @@ export default function Home() {
                 <li><code>combine_two_hcl_blocks</code></li>
               </ul>
             </div>
-            {/* Right Column: The Future */}
-            <div style={{ flex: 1, paddingLeft: 20 }}>
-              <CLICard />
-            </div>
+
           </div>
         </div>
 
@@ -420,13 +327,9 @@ export default function Home() {
             rel="noopener noreferrer"
             style={{ color: "var(--subtle)", textDecoration: "underline" }}
           >
-            Built by Ammar Qureshi, Founder of AGX
+            Built by Ammar Qureshi
           </a>
         </div>
-        <p className="footer-line" style={{ fontSize: "0.75rem", marginTop: "1rem" }}>
-          AGX™ is a product of AQ DIGITAL LIMITED <br/>
-          In the UK, AGX is offered under the mark AQ DIGITAL AGX™
-        </p>
         <SpeedInsights />
         <Analytics />
       </main>
