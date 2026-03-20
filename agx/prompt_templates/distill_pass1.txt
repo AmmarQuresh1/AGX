@@ -1,0 +1,10 @@
+Task: {{TASK}}
+
+Below are AWS service groups. Return ONLY a JSON array of group names relevant to this infrastructure task. If the task is not about AWS infrastructure, return an empty array [].
+
+Do not speculatively include groups — only select groups whose resources are directly needed.
+
+Groups:
+{{GROUP_LIST}}
+
+Return JSON array only, e.g. ["s3", "iam"]

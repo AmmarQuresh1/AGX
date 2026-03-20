@@ -1,0 +1,10 @@
+Task: {{TASK}}
+
+Below are AWS resource types available for this task. Return ONLY a JSON array of resource type names that are directly required to complete the task. Do not include resources that are merely related — only those that must be created.
+
+If none are relevant, return an empty array [].
+
+Resources:
+{{RESOURCE_LIST}}
+
+Return JSON array only, e.g. ["aws_s3_bucket", "aws_s3_bucket_policy"]

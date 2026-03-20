@@ -14,10 +14,10 @@ export default function Home() {
   const MIN_SPINNER_MS = 2250; 
 
   const QUICK_PROMPTS = [
-  "Create an S3 bucket named 'agx-assets' and save to infra.tf",
-  "Deploy a private bucket called 'secure-logs'", 
-  "Log 'Starting Job', create a bucket 'app-data', then log 'Done'",
-  "Create two buckets: 'frontend' and 'backend' and save to main.tf"
+  "Create an S3 bucket named 'agx-assets' with public access blocked",
+  "Create a VPC with two subnets and an internet gateway",
+  "Set up an IAM role with an S3 read-only policy attached",
+  "Deploy a Lambda function with a CloudWatch log group"
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -123,10 +123,10 @@ export default function Home() {
             Verification First Terraform
           </h1>
           <p className="hero-lead">
-            AGX is a single-shot agentic Terraform generator that constrains the LLM planner to a predefined function registry, statically validating each generated plan before compilation. It checks for function existence, parameter usage, variable assignment order, and type correctness.
+            AGX is a neurosymbolic Terraform generator. It dynamically distils a function registry from your prompt, validates plans against a dependency DAG, and compiles verified output — all in a single pass.
           </p>
             <p className="hero-sub">
-            An independent project exploring whether moving validation earlier and restricting output to a known function registry can produce more predictable LLM-generated infrastructure.
+            An independent research project exploring whether static validation, constrained planning, and DAG-based dependency checking can outperform raw LLMs on first-pass infrastructure generation.
             </p>
           <div className="hero-actions">
             <button
@@ -163,7 +163,7 @@ export default function Home() {
               <input
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder={"Create an S3 bucket and save to main.tf"}
+                placeholder={"Create a VPC with subnets and an EC2 instance..."}
                 className="prompt-input input"
                 style={{ padding: 12, fontSize: "1.2rem" }}
               />
@@ -225,8 +225,8 @@ export default function Home() {
               className="pre-box"
             >
               {downloading && processingStep > 0 ? (
-                processingStep === 1 ? "[1/3] Generating plan…" :
-                processingStep === 2 ? "[2/3] Validating plan correctness…" :
+                processingStep === 1 ? "[1/3] Distilling registry & generating plan…" :
+                processingStep === 2 ? "[2/3] Validating plan + DAG dependencies…" :
                 "[3/3] Compiling into runnable script…"
               ) : result}
             </pre>
@@ -291,25 +291,24 @@ export default function Home() {
                   How it works:
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6, marginBottom: "1rem" }}>
-                  Uses a <strong>deterministic validation stage</strong> to enforce strict type safety. The engine checks every step against a function registry to prevent hallucinated parameters or invalid dependencies.
+                  <strong>Registry distillation</strong> selects relevant AWS resources via two LLM passes, then dynamically generates typed functions from Terraform schemas. A <strong>DAG validator</strong> enforces correct resource ordering and dependency completeness before compilation.
                 </p>
 
                 <h4 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--foreground)", marginBottom: "0.5rem" }}>
-                  Future work:
+                  Pipeline:
                 </h4>
                 <p className="text-subtle" style={{ lineHeight: 1.6 }}>
-                  The most significant missing piece is DAG-based validation — currently the validator only checks plan format, not execution order or dependency soundness.
+                  Prompt → Registry Distillation (2-pass) → Dynamic Function Generation → LLM Planning → Static Validation + DAG Check → Compilation → Executable Script
                 </p>
               </div>
-              
-              <h4 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.5rem" }}>Available tools (demo subset):</h4>
+
+              <h4 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.5rem" }}>Supported AWS services:</h4>
               <ul style={{ paddingLeft: "1.25rem", listStyle: "disc", lineHeight: 1.6, fontSize: "0.95rem" }} className="text-subtle">
-                <li><code>set_bucket_name</code></li>
-                <li><code>create_aws_s3_bucket</code></li>
-                <li><code>aws_s3_bucket_public_access_block</code></li>
-                <li><code>save_hcl_to_file</code></li>
-                <li><code>sanitise_resource_name</code></li>
-                <li><code>combine_two_hcl_blocks</code></li>
+                <li>S3 — buckets, policies, versioning, public access</li>
+                <li>EC2 — instances, key pairs, volumes, elastic IPs</li>
+                <li>IAM — roles, policies, instance profiles</li>
+                <li>VPC — subnets, security groups, gateways, route tables</li>
+                <li>Lambda, DynamoDB, RDS, SNS, SQS, CloudWatch</li>
               </ul>
             </div>
 

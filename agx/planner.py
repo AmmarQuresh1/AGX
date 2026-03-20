@@ -7,20 +7,23 @@ Generates a plan based on user input.
 - Returns a list of steps (function and args from JSON) or an empty list if invalid.
 """
 
-# To use Mistral planner move mistral_planner from agx/archive to agx/ and uncomment the import below:
-# from .mistral_planner import generate_plan_from_mistral #mistral (currently archived)
-from .llm_openai import generate_raw_json #openai
+from .llm_openai import generate_raw_json
 from typing import Optional
 import json
 import re
 
-def generate_plan(prompt=None, previous_plan=None, validation_errors=None):
+def generate_plan(prompt=None, previous_plan=None, validation_errors=None, prompt_fragment: Optional[str] = None):
     # Interactively prompts user if no input is provided
     if not prompt:
         prompt = input("[AGX] What would you like to do? ")
 
     print("[AGX Planner] Generating plan...")
-    raw_output = generate_raw_json(prompt, previous_plan=previous_plan, validation_errors=validation_errors)
+    raw_output = generate_raw_json(
+        prompt,
+        previous_plan=previous_plan,
+        validation_errors=validation_errors,
+        prompt_fragment=prompt_fragment,
+    )
 
     print("=== RAW AI OUTPUT ===")
     print(raw_output)
@@ -32,7 +35,7 @@ def generate_plan(prompt=None, previous_plan=None, validation_errors=None):
         print("[AGX Planner] Failed to extract JSON.")
         return []
     try:
-        plan = json.loads(match.group(0)) # Parses the first valid JSON array from the raw output into a Python list
+        plan = json.loads(match.group(0))
         print("[AGX Planner] Plan parsed successfully.")
         return plan
     except json.JSONDecodeError as e:

@@ -24,15 +24,65 @@ load_dotenv()
 _api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=_api_key) if OpenAI and _api_key else None
 
-def generate_raw_json(task: str, previous_plan: Optional[list] = None, validation_errors: Optional[list[str]] = None) -> str:
+def _build_dynamic_template(prompt_fragment: str) -> str:
+    """Build a planner prompt template from a dynamic function listing."""
+    return """Instruction: {{TASK}}
+
+{{PREVIOUS_PLAN_WITH_ERRORS}}
+
+Reject instruction returning log_message in valid form if:
+- question
+- purely conversational
+- information request
+- unsafe
+
+Variable assignment and reuse:
+- No implicit function calls such as using a function name inside a variable
+- To reuse a value produced earlier, first capture it with "assign", then reference it as a string value like "{varName}" in later args.
+- Only reference variables that were previously assigned. Do not invent variables like "{previous_result}".
+- The assign key is top-level only and must not appear inside args.
+
+Step object schema (verbal form):
+- function: string. Must exactly match one of the allowed function names listed below.
+- args: object. The named parameters for the function.
+- assign: optional string. Top-level only (never inside args). Use only when capturing a return value for reuse.
+
+Available functions (names must match runtime):
+""" + prompt_fragment + """
+
+Using available functions, respond only with JSON plan with form as shown below with no additions(no newline characters etc):
+[
+  {
+    // Step 1: Set a value for reuse
+    "function": "<function_name>",
+    "args": { "param": "<value>" },
+    "assign": "<var>"
+  },
+  {
+    // Step 2: Use assigned variable in another function
+    "function": "<function_name>",
+    "args": { "param": "{<var>}" },
+    "assign": "<var>"
+  }
+]
+"""
+
+
+def generate_raw_json(task: str, previous_plan: Optional[list] = None, validation_errors: Optional[list[str]] = None, prompt_fragment: Optional[str] = None) -> str:
     if client is None:
         raise RuntimeError(
             "OpenAI client is not configured. Install the openai package and set OPENAI_API_KEY."
         )
-    current_dir = Path(__file__).parent
-    template_path = current_dir / "prompt_templates" / "devops_test.txt" 
-    with open(template_path, "r") as f:
-        template = f.read()
+
+    if prompt_fragment:
+        # Use dynamic template built from distilled registry
+        template = _build_dynamic_template(prompt_fragment)
+    else:
+        # Fall back to static template
+        current_dir = Path(__file__).parent
+        template_path = current_dir / "prompt_templates" / "devops_test.txt"
+        with open(template_path, "r") as f:
+            template = f.read()
 
     # Replace task placeholder
     prompt = template.replace("{{TASK}}", task)
@@ -103,6 +153,25 @@ def generate_raw_json(task: str, previous_plan: Optional[list] = None, validatio
         input=prompt,
         temperature=0, # not usable with o3-mini or gpt 5 models
         # reasoning={"effort":"minimal"} 
+    )
+
+    return response.output_text
+
+
+def call_llm(prompt: str) -> str:
+    """
+    Generic LLM call for non-planning uses (e.g. registry distillation).
+    Takes a prompt string, returns raw output text.
+    """
+    if client is None:
+        raise RuntimeError(
+            "OpenAI client is not configured. Install the openai package and set OPENAI_API_KEY."
+        )
+
+    response = client.responses.create(
+        model="gpt-4.1-nano-2025-04-14",
+        input=prompt,
+        temperature=0,
     )
 
     return response.output_text

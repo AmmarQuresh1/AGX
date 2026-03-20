@@ -24,10 +24,10 @@ else plan has errors, fix before proceeding (hybrid confidence for retries)
 """
 
 import re
-from .registries.devops_test import registry # Change registry here
+from .registries.devops_test import registry as _default_registry
 import inspect
 from inspect import signature
-from typing import get_origin
+from typing import get_origin, Optional
 import typing
 
 def _is_basic_type(type_hint):
@@ -65,7 +65,9 @@ def _check_type(value, type_hint):
     # Fallback: don't block on complex hints in the demo
     return True
 
-def validate_plan(plan):
+def validate_plan(plan, registry: Optional[dict] = None):
+    if registry is None:
+        registry = _default_registry
     assigned_vars = set()  # Keeps track of all variables that get assigned values
     errors = []            # Collects any validation errors found
 
