@@ -1,0 +1,469 @@
+{
+  "provider": "aws",
+  "service_groups": {
+    "s3": {
+      "description": "Object storage buckets, objects, and access policies",
+      "resources": {
+        "aws_s3_bucket": {
+          "description": "Provides an S3 bucket resource",
+          "required_attrs": {
+            "bucket": "string"
+          },
+          "optional_attrs": {
+            "force_destroy": "bool",
+            "tags": "map(string)"
+          }
+        },
+        "aws_s3_bucket_policy": {
+          "description": "Attaches a policy to an S3 bucket",
+          "required_attrs": {
+            "bucket": "string",
+            "policy": "string"
+          },
+          "optional_attrs": {}
+        },
+        "aws_s3_bucket_public_access_block": {
+          "description": "Manages S3 bucket-level public access block configuration",
+          "required_attrs": {
+            "bucket": "string"
+          },
+          "optional_attrs": {
+            "block_public_acls": "bool",
+            "block_public_policy": "bool",
+            "ignore_public_acls": "bool",
+            "restrict_public_buckets": "bool"
+          }
+        },
+        "aws_s3_bucket_versioning": {
+          "description": "Provides an S3 bucket versioning resource",
+          "required_attrs": {
+            "bucket": "string",
+            "versioning_status": "string"
+          },
+          "optional_attrs": {}
+        },
+        "aws_s3_object": {
+          "description": "Provides an S3 object resource",
+          "required_attrs": {
+            "bucket": "string",
+            "key": "string"
+          },
+          "optional_attrs": {
+            "content": "string",
+            "source": "string",
+            "content_type": "string",
+            "tags": "map(string)"
+          }
+        }
+      }
+    },
+    "ec2": {
+      "description": "Compute instances, AMIs, key pairs, volumes, and elastic IPs",
+      "resources": {
+        "aws_instance": {
+          "description": "Provides an EC2 instance resource",
+          "required_attrs": {
+            "ami": "string",
+            "instance_type": "string"
+          },
+          "optional_attrs": {
+            "subnet_id": "string",
+            "vpc_security_group_ids": "list(string)",
+            "key_name": "string",
+            "associate_public_ip_address": "bool",
+            "tags": "map(string)",
+            "user_data": "string"
+          }
+        },
+        "aws_key_pair": {
+          "description": "Provides an EC2 key pair resource for SSH access",
+          "required_attrs": {
+            "key_name": "string",
+            "public_key": "string"
+          },
+          "optional_attrs": {
+            "tags": "map(string)"
+          }
+        },
+        "aws_ebs_volume": {
+          "description": "Provides an EBS volume resource",
+          "required_attrs": {
+            "availability_zone": "string"
+          },
+          "optional_attrs": {
+            "size": "number",
+            "type": "string",
+            "encrypted": "bool",
+            "tags": "map(string)"
+          }
+        },
+        "aws_eip": {
+          "description": "Provides an Elastic IP resource",
+          "required_attrs": {},
+          "optional_attrs": {
+            "domain": "string",
+            "instance": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_ami": {
+          "description": "Provides an AMI resource for custom machine images",
+          "required_attrs": {
+            "name": "string"
+          },
+          "optional_attrs": {
+            "description": "string",
+            "virtualization_type": "string",
+            "root_device_name": "string",
+            "tags": "map(string)"
+          }
+        }
+      }
+    },
+    "iam": {
+      "description": "Identity and access management: roles, policies, users, and groups",
+      "resources": {
+        "aws_iam_role": {
+          "description": "Provides an IAM role",
+          "required_attrs": {
+            "name": "string",
+            "assume_role_policy": "string"
+          },
+          "optional_attrs": {
+            "description": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_iam_policy": {
+          "description": "Provides an IAM policy",
+          "required_attrs": {
+            "name": "string",
+            "policy": "string"
+          },
+          "optional_attrs": {
+            "description": "string",
+            "path": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_iam_role_policy_attachment": {
+          "description": "Attaches a managed IAM policy to an IAM role",
+          "required_attrs": {
+            "role": "string",
+            "policy_arn": "string"
+          },
+          "optional_attrs": {}
+        },
+        "aws_iam_instance_profile": {
+          "description": "Provides an IAM instance profile for EC2",
+          "required_attrs": {
+            "name": "string",
+            "role": "string"
+          },
+          "optional_attrs": {
+            "tags": "map(string)"
+          }
+        },
+        "aws_iam_user": {
+          "description": "Provides an IAM user",
+          "required_attrs": {
+            "name": "string"
+          },
+          "optional_attrs": {
+            "path": "string",
+            "tags": "map(string)"
+          }
+        }
+      }
+    },
+    "vpc": {
+      "description": "Virtual private cloud: networks, subnets, gateways, and route tables",
+      "resources": {
+        "aws_vpc": {
+          "description": "Provides a VPC resource",
+          "required_attrs": {
+            "cidr_block": "string"
+          },
+          "optional_attrs": {
+            "enable_dns_support": "bool",
+            "enable_dns_hostnames": "bool",
+            "tags": "map(string)"
+          }
+        },
+        "aws_subnet": {
+          "description": "Provides a VPC subnet resource",
+          "required_attrs": {
+            "vpc_id": "string",
+            "cidr_block": "string"
+          },
+          "optional_attrs": {
+            "availability_zone": "string",
+            "map_public_ip_on_launch": "bool",
+            "tags": "map(string)"
+          }
+        },
+        "aws_security_group": {
+          "description": "Provides a security group resource",
+          "required_attrs": {
+            "name": "string"
+          },
+          "optional_attrs": {
+            "description": "string",
+            "vpc_id": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_security_group_rule": {
+          "description": "Provides a security group rule resource",
+          "required_attrs": {
+            "type": "string",
+            "from_port": "number",
+            "to_port": "number",
+            "protocol": "string",
+            "security_group_id": "string"
+          },
+          "optional_attrs": {
+            "cidr_blocks": "list(string)",
+            "description": "string",
+            "source_security_group_id": "string"
+          }
+        },
+        "aws_internet_gateway": {
+          "description": "Provides an internet gateway resource for VPC",
+          "required_attrs": {
+            "vpc_id": "string"
+          },
+          "optional_attrs": {
+            "tags": "map(string)"
+          }
+        },
+        "aws_route_table": {
+          "description": "Provides a VPC route table resource",
+          "required_attrs": {
+            "vpc_id": "string"
+          },
+          "optional_attrs": {
+            "tags": "map(string)"
+          }
+        },
+        "aws_route_table_association": {
+          "description": "Associates a subnet with a route table",
+          "required_attrs": {
+            "subnet_id": "string",
+            "route_table_id": "string"
+          },
+          "optional_attrs": {}
+        },
+        "aws_nat_gateway": {
+          "description": "Provides a NAT gateway resource for private subnets",
+          "required_attrs": {
+            "allocation_id": "string",
+            "subnet_id": "string"
+          },
+          "optional_attrs": {
+            "tags": "map(string)"
+          }
+        }
+      }
+    },
+    "lambda": {
+      "description": "Serverless compute functions, layers, and permissions",
+      "resources": {
+        "aws_lambda_function": {
+          "description": "Provides a Lambda function resource",
+          "required_attrs": {
+            "function_name": "string",
+            "role": "string",
+            "runtime": "string",
+            "handler": "string"
+          },
+          "optional_attrs": {
+            "filename": "string",
+            "s3_bucket": "string",
+            "s3_key": "string",
+            "timeout": "number",
+            "memory_size": "number",
+            "environment_variables": "map(string)",
+            "tags": "map(string)"
+          }
+        },
+        "aws_lambda_permission": {
+          "description": "Allows an external source to invoke a Lambda function",
+          "required_attrs": {
+            "action": "string",
+            "function_name": "string",
+            "principal": "string",
+            "statement_id": "string"
+          },
+          "optional_attrs": {
+            "source_arn": "string"
+          }
+        },
+        "aws_lambda_layer_version": {
+          "description": "Provides a Lambda layer version resource",
+          "required_attrs": {
+            "layer_name": "string",
+            "compatible_runtimes": "list(string)"
+          },
+          "optional_attrs": {
+            "filename": "string",
+            "s3_bucket": "string",
+            "s3_key": "string",
+            "description": "string"
+          }
+        }
+      }
+    },
+    "dynamodb": {
+      "description": "NoSQL key-value and document database tables",
+      "resources": {
+        "aws_dynamodb_table": {
+          "description": "Provides a DynamoDB table resource",
+          "required_attrs": {
+            "name": "string",
+            "hash_key": "string",
+            "billing_mode": "string"
+          },
+          "optional_attrs": {
+            "range_key": "string",
+            "read_capacity": "number",
+            "write_capacity": "number",
+            "tags": "map(string)"
+          }
+        }
+      }
+    },
+    "rds": {
+      "description": "Relational database service instances and subnet groups",
+      "resources": {
+        "aws_db_instance": {
+          "description": "Provides an RDS database instance",
+          "required_attrs": {
+            "allocated_storage": "number",
+            "engine": "string",
+            "instance_class": "string"
+          },
+          "optional_attrs": {
+            "db_name": "string",
+            "username": "string",
+            "password": "string",
+            "engine_version": "string",
+            "skip_final_snapshot": "bool",
+            "db_subnet_group_name": "string",
+            "vpc_security_group_ids": "list(string)",
+            "publicly_accessible": "bool",
+            "multi_az": "bool",
+            "storage_type": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_db_subnet_group": {
+          "description": "Provides an RDS DB subnet group",
+          "required_attrs": {
+            "name": "string",
+            "subnet_ids": "list(string)"
+          },
+          "optional_attrs": {
+            "description": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_db_parameter_group": {
+          "description": "Provides an RDS DB parameter group",
+          "required_attrs": {
+            "name": "string",
+            "family": "string"
+          },
+          "optional_attrs": {
+            "description": "string",
+            "tags": "map(string)"
+          }
+        }
+      }
+    },
+    "sns": {
+      "description": "Simple notification service topics and subscriptions",
+      "resources": {
+        "aws_sns_topic": {
+          "description": "Provides an SNS topic resource",
+          "required_attrs": {
+            "name": "string"
+          },
+          "optional_attrs": {
+            "display_name": "string",
+            "tags": "map(string)"
+          }
+        },
+        "aws_sns_topic_subscription": {
+          "description": "Provides an SNS topic subscription",
+          "required_attrs": {
+            "topic_arn": "string",
+            "protocol": "string",
+            "endpoint": "string"
+          },
+          "optional_attrs": {}
+        }
+      }
+    },
+    "sqs": {
+      "description": "Simple queue service queues and policies",
+      "resources": {
+        "aws_sqs_queue": {
+          "description": "Provides an SQS queue resource",
+          "required_attrs": {
+            "name": "string"
+          },
+          "optional_attrs": {
+            "delay_seconds": "number",
+            "max_message_size": "number",
+            "message_retention_seconds": "number",
+            "visibility_timeout_seconds": "number",
+            "fifo_queue": "bool",
+            "tags": "map(string)"
+          }
+        },
+        "aws_sqs_queue_policy": {
+          "description": "Provides an SQS queue policy",
+          "required_attrs": {
+            "queue_url": "string",
+            "policy": "string"
+          },
+          "optional_attrs": {}
+        }
+      }
+    },
+    "cloudwatch": {
+      "description": "Monitoring, logging, and alerting",
+      "resources": {
+        "aws_cloudwatch_log_group": {
+          "description": "Provides a CloudWatch log group",
+          "required_attrs": {
+            "name": "string"
+          },
+          "optional_attrs": {
+            "retention_in_days": "number",
+            "tags": "map(string)"
+          }
+        },
+        "aws_cloudwatch_metric_alarm": {
+          "description": "Provides a CloudWatch metric alarm",
+          "required_attrs": {
+            "alarm_name": "string",
+            "comparison_operator": "string",
+            "evaluation_periods": "number",
+            "metric_name": "string",
+            "namespace": "string",
+            "period": "number",
+            "statistic": "string",
+            "threshold": "number"
+          },
+          "optional_attrs": {
+            "alarm_description": "string",
+            "alarm_actions": "list(string)",
+            "tags": "map(string)"
+          }
+        }
+      }
+    }
+  }
+}
