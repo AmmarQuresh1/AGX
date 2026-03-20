@@ -92,11 +92,16 @@ def agx_main(prompt: Optional[str] = None, max_retries: int = MAX_RETRIES):
         # Structural validation (function existence, types, variable refs)
         is_valid, errors = validate_plan(plan, registry=registry)
 
-        # DAG validation (ordering + completeness)
-        dag_errors = validate_plan_ordering(plan, topo_order)
-        dag_errors += validate_completeness(plan, dep_map)
+        # DAG completeness — unfixable by planner, fail fast
+        completeness_errors = validate_completeness(plan, dep_map)
+        if completeness_errors:
+            print(f"[AGX] Missing dependency resources (cannot retry): {completeness_errors}")
+            return {"error": "missing_dependencies", "errors": completeness_errors}
 
-        all_errors = errors + dag_errors
+        # DAG ordering — fixable by planner via retry
+        ordering_errors = validate_plan_ordering(plan, topo_order)
+
+        all_errors = errors + ordering_errors
         if not all_errors:
             print("[AGX] Compiling plan...")
             code = compile_plan(plan, registry=registry, source_map=source_map)
