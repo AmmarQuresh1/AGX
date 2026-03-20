@@ -99,6 +99,25 @@ def _build_pass2_prompt(task: str, resources: list[dict]) -> str:
     return prompt
 
 
+def _resolve_dependencies(selected_types: list[str]) -> list[str]:
+    """Expand selected resource types to include all transitive dependencies."""
+    import json as _json
+    from pathlib import Path as _Path
+
+    dep_path = _Path(__file__).parent / "tf_schema" / "aws_dependency_map.json"
+    dep_map = _json.loads(dep_path.read_text())
+
+    result = set(selected_types)
+    queue = list(selected_types)
+    while queue:
+        resource = queue.pop()
+        for dep in dep_map.get(resource, []):
+            if dep not in result:
+                result.add(dep)
+                queue.append(dep)
+    return sorted(result)
+
+
 def distill_registry(prompt: str, llm_call_fn: Callable[[str], str]) -> dict:
     """
     Two-pass LLM distillation to select relevant resources.
@@ -145,6 +164,16 @@ def distill_registry(prompt: str, llm_call_fn: Callable[[str], str]) -> dict:
 
     if not selected_types:
         return {"resources": None, "error": "No specific resources identified for this request"}
+
+    # Auto-include transitive dependencies so the registry is complete
+    selected_types = _resolve_dependencies(selected_types)
+
+    # Also expand selected_groups to include groups that contain dependencies
+    all_groups = tree.get("service_groups", {})
+    for rtype in selected_types:
+        for gname, group in all_groups.items():
+            if rtype in group.get("resources", {}) and gname not in selected_groups:
+                selected_groups.append(gname)
 
     if len(selected_types) > MAX_RESOURCES:
         return {

@@ -179,10 +179,11 @@ def test_optional_parameter_provided():
 
 # Edge Cases
 def test_empty_plan():
-    """Test empty plan validation"""
+    """Test empty plan is rejected"""
     is_valid, errors = validate_plan([])
-    assert is_valid is True
-    assert errors == []
+    assert is_valid is False
+    assert len(errors) == 1
+    assert "Empty plan" in errors[0]
 
 
 def test_none_function():

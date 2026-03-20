@@ -185,3 +185,38 @@ def test_distillation_error():
 
     assert "error" in result
     assert "non-infrastructure" in result["error"]
+
+
+def test_completeness_errors_fail_fast():
+    """DAG completeness errors should fail immediately without retrying."""
+    # Plan creates a resource whose dependency is missing
+    plan_missing_dep = [
+        {"function": "create_aws_s3_bucket_policy", "args": {"label": "pol", "bucket": "b", "policy": "p"}}
+    ]
+
+    generate_plan_calls = []
+
+    def mock_generate_plan(prompt=None, previous_plan=None, validation_errors=None, prompt_fragment=None):
+        generate_plan_calls.append(1)
+        return plan_missing_dep
+
+    # Use real dep_map and completeness validator, mock everything else
+    patches = [
+        patch("agx.core.distill_registry", return_value=_MOCK_DISTILL_OK),
+        patch("agx.core.build_dag", return_value={"adjacency": {}, "missing_deps": []}),
+        patch("agx.core.topological_sort", return_value=[]),
+        patch("agx.core.validate_plan_ordering", return_value=[]),
+        # DO NOT mock validate_completeness — let it run with real dep map
+    ]
+    for p in patches:
+        p.start()
+    try:
+        with patch('agx.core.generate_plan', side_effect=mock_generate_plan):
+            result = agx_main("test prompt", max_retries=3)
+
+            # Should fail fast on first attempt — no retries
+            assert len(generate_plan_calls) == 1
+            assert result["error"] == "missing_dependencies"
+    finally:
+        for p in patches:
+            p.stop()

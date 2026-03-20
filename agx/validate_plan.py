@@ -68,6 +68,10 @@ def _check_type(value, type_hint):
 def validate_plan(plan, registry: Optional[dict] = None):
     if registry is None:
         registry = _default_registry
+
+    if not plan:
+        return False, ["[Plan Error] Empty plan — no steps generated"]
+
     assigned_vars = set()  # Keeps track of all variables that get assigned values
     errors = []            # Collects any validation errors found
 

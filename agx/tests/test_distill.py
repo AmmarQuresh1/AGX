@@ -125,3 +125,41 @@ def test_end_to_end_distillation():
     assert "aws_subnet" in result["resources"]
     assert "aws_internet_gateway" in result["resources"]
     assert call_count == 2
+
+
+def test_auto_includes_transitive_deps():
+    """Lambda depends on IAM role — should be auto-included even if LLM doesn't select it."""
+    call_count = 0
+    def mock_llm(prompt):
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            return '["lambda"]'
+        # LLM only selects lambda_function, not iam_role
+        return '["aws_lambda_function"]'
+
+    result = distill_registry("Deploy a Lambda function", mock_llm)
+    assert result["error"] is None
+    # Lambda was selected by LLM
+    assert "aws_lambda_function" in result["resources"]
+    # IAM role should be auto-included via dependency resolution
+    assert "aws_iam_role" in result["resources"]
+
+
+def test_auto_includes_deep_transitive_deps():
+    """aws_instance → aws_subnet → aws_vpc — deep chain should be fully resolved."""
+    call_count = 0
+    def mock_llm(prompt):
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            return '["ec2"]'
+        return '["aws_instance"]'
+
+    result = distill_registry("Launch an EC2 instance", mock_llm)
+    assert result["error"] is None
+    assert "aws_instance" in result["resources"]
+    # Transitive deps: instance → subnet → vpc, instance → security_group → vpc
+    assert "aws_subnet" in result["resources"]
+    assert "aws_security_group" in result["resources"]
+    assert "aws_vpc" in result["resources"]
