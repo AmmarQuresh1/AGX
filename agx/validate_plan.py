@@ -117,12 +117,13 @@ def validate_plan(plan, registry: Optional[dict] = None):
                 errors.append(f"[Plan Error] Step {i+1}: Missing required parameter '{param_name}' for function '{fn}'")
 
         # VARIABLE REFERENCE VALIDATION 
-        # Check if any arguments reference variables (format: {variable_name})
+        # Check if any arguments reference variables (format: {variable_name}).
+        # Only match valid Python identifiers — this avoids false positives on
+        # JSON content embedded in string values (e.g. IAM assume_role_policy).
         for k, v in args.items():
-            if isinstance(v, str) and "{" in v and "}" in v: 
-                matches = re.findall(r"\{[^{}]*\}", v)
-                for pair in matches:
-                    var_name = pair[1:-1] # Remove the outer curly brace of step
+            if isinstance(v, str) and "{" in v and "}" in v:
+                matches = re.findall(r"\{([a-zA-Z_][a-zA-Z0-9_]*)\}", v)
+                for var_name in matches:
                     if var_name not in assigned_vars:
                         errors.append(f"[Plan Error] Step {i+1}: Variable '{var_name}' used in argument '{k}' before assignment.")
 
