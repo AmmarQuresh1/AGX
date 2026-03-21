@@ -86,13 +86,13 @@ def test_variable_in_middle_of_string():
 
 
 def test_empty_variable_reference():
-    """Test edge case of empty variable reference"""
-    bad = [
+    """Empty {} is not a valid identifier pattern so it is not treated as a
+    variable reference — the string passes through as a literal value."""
+    plan = [
         {"function": "log_message", "args": {"message": "{}"}}
     ]
-    is_valid, errors = validate_plan(bad)
-    assert is_valid is False  # Empty var name should fail
-    assert len(errors) > 0
+    is_valid, errors = validate_plan(plan)
+    assert is_valid is True  # {} contains no identifier, not a var ref
 
 
 # Type Checking Tests
@@ -213,3 +213,28 @@ def test_complex_variable_chain():
     is_valid, errors = validate_plan(valid)
     assert is_valid is True
     assert errors == []
+
+
+def test_json_string_in_arg_not_treated_as_var_ref():
+    """Regression: IAM assume_role_policy contains embedded JSON with {}.
+    The validator must NOT flag inner JSON keys like {"Service":"..."} as
+    undefined variable references."""
+    policy = ('{"Version":"2012-10-17","Statement":[{"Effect":"Allow",'
+              '"Principal":{"Service":"ec2.amazonaws.com"},'
+              '"Action":"sts:AssumeRole"}]}')
+    plan = [
+        {"function": "log_message", "args": {"message": policy}}
+    ]
+    is_valid, errors = validate_plan(plan)
+    assert is_valid is True, f"Unexpected errors: {errors}"
+
+
+def test_json_string_does_not_shadow_real_var_errors():
+    """Embedded JSON must not suppress genuine undefined-variable errors
+    that happen to sit in the same argument value."""
+    plan = [
+        {"function": "log_message", "args": {"message": "{\"key\":\"val\"} see {undefined_var}"}}
+    ]
+    is_valid, errors = validate_plan(plan)
+    assert is_valid is False
+    assert any("undefined_var" in e for e in errors)

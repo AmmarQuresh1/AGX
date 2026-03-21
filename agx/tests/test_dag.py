@@ -134,3 +134,27 @@ def test_load_dependency_map():
     assert isinstance(dep_map, dict)
     assert "aws_s3_bucket_policy" in dep_map
     assert "aws_s3_bucket" in dep_map["aws_s3_bucket_policy"]
+
+
+def test_iam_role_policy_attachment_managed_policy_no_error():
+    """Regression: attaching a managed (pre-existing) policy by ARN must NOT
+    require aws_iam_policy to be present in the plan.  Only aws_iam_role is a
+    hard dependency."""
+    dep_map = load_dependency_map()
+    plan = [
+        {"function": "create_aws_iam_role", "args": {}},
+        {"function": "create_aws_iam_role_policy_attachment",
+         "args": {"policy_arn": "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"}},
+    ]
+    errors = validate_completeness(plan, dep_map)
+    assert errors == [], f"Unexpected completeness errors: {errors}"
+
+
+def test_iam_role_policy_attachment_still_needs_role():
+    """aws_iam_role must still be flagged as missing when absent."""
+    dep_map = load_dependency_map()
+    plan = [
+        {"function": "create_aws_iam_role_policy_attachment", "args": {}},
+    ]
+    errors = validate_completeness(plan, dep_map)
+    assert any("aws_iam_role" in e for e in errors)
