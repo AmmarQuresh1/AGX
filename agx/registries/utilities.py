@@ -29,8 +29,10 @@ def sanitise_resource_name(name: str) -> str:
     return label
 
 
-def combine_hcl_blocks(*blocks: str) -> str:
+def combine_hcl_blocks(blocks: list) -> str:
     """Joins any number of HCL blocks into one string separated by double newlines."""
+    if isinstance(blocks, str):
+        blocks = [blocks]
     return "\n\n".join(b.strip() for b in blocks if b and b.strip())
 
 
@@ -61,7 +63,9 @@ UTILITY_SOURCE = {
         label = f"r_{label}"
     return label''',
 
-    "combine_hcl_blocks": '''def combine_hcl_blocks(*blocks: str) -> str:
+    "combine_hcl_blocks": '''def combine_hcl_blocks(blocks: list) -> str:
     """Joins any number of HCL blocks into one string separated by double newlines."""
+    if isinstance(blocks, str):
+        blocks = [blocks]
     return "\\n\\n".join(b.strip() for b in blocks if b and b.strip())''',
 }
