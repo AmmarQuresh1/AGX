@@ -145,7 +145,7 @@ def generate_raw_json(task: str, previous_plan: Optional[list] = None, validatio
     print("Prompt Sent to GPT")
 
     response = client.responses.create(
-        model="gpt-5.4-2026-03-17",  # full GPT-5.4 — best for structured plan generation
+        model="gpt-5.4-2026-03-05",  # full GPT-5.4 — best for structured plan generation
         input=prompt,
     )
 
