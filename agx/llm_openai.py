@@ -30,11 +30,7 @@ def _build_dynamic_template(prompt_fragment: str) -> str:
 
 {{PREVIOUS_PLAN_WITH_ERRORS}}
 
-Reject instruction returning log_message in valid form if:
-- question
-- purely conversational
-- information request
-- unsafe
+If the instruction is NOT an infrastructure request (e.g. a question, conversational message, or unsafe request), return ONLY a single log_message step explaining why. Otherwise, generate the full plan.
 
 Variable assignment and reuse:
 - No implicit function calls such as using a function name inside a variable
@@ -149,10 +145,8 @@ def generate_raw_json(task: str, previous_plan: Optional[list] = None, validatio
     print("Prompt Sent to GPT")
 
     response = client.responses.create(
-        model="gpt-4.1-nano-2025-04-14",  # or "gpt-4.1-mini-2025-04-14"
+        model="gpt-5.4-2026-03-17",  # full GPT-5.4 — best for structured plan generation
         input=prompt,
-        temperature=0, # not usable with o3-mini or gpt 5 models
-        # reasoning={"effort":"minimal"} 
     )
 
     return response.output_text
@@ -169,7 +163,7 @@ def call_llm(prompt: str) -> str:
         )
 
     response = client.responses.create(
-        model="gpt-4.1-nano-2025-04-14",
+        model="gpt-4.1-mini-2025-04-14",
         input=prompt,
         temperature=0,
     )
